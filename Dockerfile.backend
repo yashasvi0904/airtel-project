@@ -1,0 +1,22 @@
+# Backend image (FastAPI + RapidOCR). Build context = repository root.
+FROM python:3.12-slim
+
+# libgl1/libglib2.0: needed by OpenCV at import time
+RUN apt-get update && apt-get install -y --no-install-recommends libgl1 libglib2.0-0 \
+    && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /app
+COPY backend/requirements-prod.txt backend/requirements-prod.txt
+RUN pip install --no-cache-dir -r backend/requirements-prod.txt
+
+COPY backend/app backend/app
+# Supplied dataset (read-only): catalogue, leads, mock registries, specimen KYC documents
+COPY assignment/data assignment/data
+RUN mkdir -p storage/uploads
+
+# Warm the OCR models into the image layer so the first KYC upload is not slow
+WORKDIR /app/backend
+RUN python -c "from rapidocr_onnxruntime import RapidOCR; RapidOCR()"
+
+ENV PORT=8000
+CMD ["sh", "-c", "uvicorn app.main:app --host 0.0.0.0 --port ${PORT}"]

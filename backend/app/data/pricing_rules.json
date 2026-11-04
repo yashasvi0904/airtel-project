@@ -1,0 +1,17 @@
+{
+  "_comment": "The catalogue gives a price RANGE per product. These policy parameters decide where in the range a customer lands. They are an explicit assumption (see docs/ARCHITECTURE.md), not catalogue data. 0 = list (max) price, 1 = floor (min) price. Contributions are summed and capped at 1.",
+  "term_position": [
+    {"min_months": 24, "position": 0.4, "label": "24-month commitment"},
+    {"min_months": 12, "position": 0.2, "label": "12-month commitment"}
+  ],
+  "volume_position": [
+    {"min_qty": 10, "position": 0.25, "label": "volume of 10+"},
+    {"min_qty": 5, "position": 0.15, "label": "volume of 5+"}
+  ],
+  "bundle_position": [
+    {"min_products": 5, "position": 0.25, "label": "5+ product bundle"},
+    {"min_products": 3, "position": 0.15, "label": "3+ product bundle"}
+  ],
+  "term_options": [12, 24],
+  "rounding": "nearest_rupee"
+}
