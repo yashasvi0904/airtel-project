@@ -1,0 +1,101 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1000" font-family="Segoe UI, Arial, sans-serif">
+  <defs>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#1c1c21"/></marker>
+    <marker id="arrR" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#e40000"/></marker>
+    <style>
+      .t{font-size:15.5px;fill:#1c1c21} .h{font-size:20px;font-weight:700;fill:#1c1c21} .s{font-size:14px;fill:#5c5f6b}
+      .box{fill:#fff;stroke:#c9cbd3;stroke-width:1.5;rx:10} .det{fill:#fff5f5;stroke:#e40000;stroke-width:2;rx:10}
+      .llm{fill:#eef4ff;stroke:#3b6fd4;stroke-width:2;rx:10} .data{fill:#f4f4f6;stroke:#9a9ca6;stroke-width:1.5;rx:10}
+      .lane{fill:none;stroke:#e6e7ec;stroke-width:2;stroke-dasharray:6 6;rx:14}
+      .n{fill:#e40000} .nt{font-size:14px;font-weight:700;fill:#fff;text-anchor:middle}
+    </style>
+  </defs>
+  <rect width="1600" height="1000" fill="#fafafa"/>
+  <text x="40" y="48" class="h" style="font-size:28px">Udyam Digital - solution architecture</text>
+  <text x="40" y="76" class="s">Red = deterministic business logic (source of truth) · Blue = LLM (interprets and explains only) · Grey = data stores</text>
+
+  <!-- lane: client -->
+  <rect class="lane" x="30" y="100" width="1540" height="150"/>
+  <text x="50" y="128" class="s">CLIENT - Next.js 16 / React / TypeScript / Tailwind (mobile-first, EN + HI)</text>
+  <rect class="box" x="50" y="145" width="180" height="85"/><text x="62" y="172" class="h">Landing</text><text x="62" y="196" class="s">value, services,</text><text x="62" y="214" class="s">segments</text>
+  <rect class="box" x="250" y="145" width="180" height="85"/><text x="262" y="172" class="h">Onboarding</text><text x="262" y="196" class="s">profile, GSTIN</text><text x="262" y="214" class="s">instant check</text>
+  <rect class="box" x="450" y="145" width="180" height="85"/><text x="462" y="172" class="h">AI advisor chat</text><text x="462" y="196" class="s">follow-ups, chips,</text><text x="462" y="214" class="s">Hindi / English</text>
+  <rect class="box" x="650" y="145" width="200" height="85"/><text x="662" y="172" class="h">Bundle + quote</text><text x="662" y="196" class="s">toggles, live repricing,</text><text x="662" y="214" class="s">fixes for dependencies</text>
+  <rect class="box" x="870" y="145" width="180" height="85"/><text x="882" y="172" class="h">Checkout</text><text x="882" y="196" class="s">order id, simulated</text><text x="882" y="214" class="s">payment</text>
+  <rect class="box" x="1070" y="145" width="220" height="85"/><text x="1082" y="172" class="h">Smart KYC + tracker</text><text x="1082" y="196" class="s">consent, upload, checks,</text><text x="1082" y="214" class="s">slot booking, timeline</text>
+  <rect class="box" x="1310" y="145" width="240" height="85"/><text x="1322" y="172" class="h">Admin dashboard</text><text x="1322" y="196" class="s">funnel, segments, leads,</text><text x="1322" y="214" class="s">orders, KYC queue, charts</text>
+
+  <!-- proxy -->
+  <rect class="box" x="430" y="275" width="740" height="48" style="fill:#1c1c21;stroke:#1c1c21"/>
+  <text x="800" y="305" class="t" style="fill:#fff;text-anchor:middle">Next.js rewrite proxy  /api/*  (no keys or backend URL in browser code)</text>
+  <path d="M800 230 L800 275" stroke="#1c1c21" stroke-width="2" marker-end="url(#arr)"/>
+
+  <!-- lane: backend -->
+  <rect class="lane" x="30" y="345" width="1540" height="400"/>
+  <text x="50" y="373" class="s">BACKEND - Python FastAPI · SQLAlchemy · Pandas · JWT auth (customer / admin) · validation · rate limits · masked logs</text>
+  <path d="M800 323 L800 392" stroke="#1c1c21" stroke-width="2" marker-end="url(#arr)"/>
+  <rect class="box" x="50" y="392" width="1500" height="46"/><text x="70" y="422" class="t">REST routers: auth · meta/catalogue · journeys/advisor · recommendations/quotes · orders/payment/schedule · KYC · admin analytics · mock registries</text>
+
+  <rect class="llm" x="50" y="470" width="300" height="250"/>
+  <text x="66" y="498" class="h">AI advisor</text>
+  <text x="66" y="524" class="s">Slots: needs, quantities, budget</text>
+  <text x="66" y="546" class="s">Deterministic question plan</text>
+  <text x="66" y="568" class="s">Provider interface:</text>
+  <text x="76" y="590" class="t">• Claude (structured output)</text>
+  <text x="76" y="612" class="t">• Rules / Hinglish fallback</text>
+  <text x="66" y="640" class="s">LLM rephrases engine output; reply is</text>
+  <text x="66" y="660" class="s">rejected if any ₹ amount or product id</text>
+  <text x="66" y="680" class="s">was not produced by the engine</text>
+
+  <rect class="det" x="370" y="470" width="360" height="250"/>
+  <text x="386" y="498" class="h">Catalogue logic</text>
+  <text x="386" y="524" class="s">Segment inference (from leads data)</text>
+  <text x="386" y="546" class="t">Eligibility: tier · employees · sites · GSTIN</text>
+  <text x="386" y="568" class="t">Dependencies: requires_one_of</text>
+  <text x="386" y="590" class="t">Recommender: starter · recommended · complete</text>
+  <text x="386" y="612" class="s">+ attach rates of activated customers</text>
+  <text x="386" y="640" class="h" style="font-size:18px">Pricing engine (Decimal)</text>
+  <text x="386" y="664" class="s">price ∈ [min,max] by term, volume, bundle size</text>
+  <text x="386" y="686" class="s">setup × qty · GST · contract value · savings</text>
+
+  <rect class="det" x="750" y="470" width="420" height="250"/>
+  <text x="766" y="498" class="h">Smart KYC pipeline</text>
+  <text x="766" y="524" class="t">1 Consent (purpose, retention) → 2 Upload</text>
+  <text x="766" y="546" class="t">3 OCR: RapidOCR (PP-OCR), deskew, sharpen</text>
+  <text x="766" y="568" class="t">4 Field parsing, GSTIN OCR-repair (checksum)</text>
+  <text x="766" y="590" class="t">5 GSTIN / Udyam registry lookup (mock APIs)</text>
+  <text x="766" y="612" class="t">6 Name &amp; address fuzzy match, cross-document</text>
+  <text x="766" y="634" class="t">7 Bill age ≤ 90d · ID expiry · signatory authority</text>
+  <text x="766" y="662" class="s">→ verified · needs_review · action_required</text>
+  <text x="766" y="684" class="s">  · incomplete · rejected  (with reasons + fixes)</text>
+
+  <rect class="det" x="1190" y="470" width="360" height="250"/>
+  <text x="1206" y="498" class="h">Orders &amp; back-office</text>
+  <text x="1206" y="524" class="t">Order state machine + event timeline</text>
+  <text x="1206" y="546" class="t">Payment (simulated), KYC gating</text>
+  <text x="1206" y="568" class="t">Install slots from typical_install_days</text>
+  <text x="1206" y="598" class="h" style="font-size:18px">Analytics (pandas)</text>
+  <text x="1206" y="622" class="t">Funnel · segments · sources · drop reasons</text>
+  <text x="1206" y="644" class="t">Propensity model (logistic regression)</text>
+  <text x="1206" y="666" class="t">Unclosed advisor journeys → call list</text>
+
+  <!-- lane: data -->
+  <rect class="lane" x="30" y="765" width="1540" height="200"/>
+  <text x="50" y="793" class="s">DATA - supplied CSVs are read-only · every module also persists to the SQL database</text>
+  <rect class="data" x="50" y="810" width="300" height="130"/><text x="66" y="838" class="h">SQL database</text><text x="66" y="862" class="s">SQLite (default) or PostgreSQL</text><text x="66" y="884" class="s">users · products (seeded from CSV)</text><text x="66" y="906" class="s">journeys · quotes · orders · events</text><text x="66" y="928" class="s">KYC cases (identifiers encrypted)</text>
+  <rect class="data" x="370" y="810" width="360" height="130"/><text x="386" y="838" class="h">Encrypted document store</text><text x="386" y="862" class="s">Fernet (AES) at rest, random file names</text><text x="386" y="884" class="s">auto-purge after 30 days</text><text x="386" y="906" class="s">delete-on-request (consent withdrawal)</text>
+  <rect class="data" x="750" y="810" width="420" height="130"/><text x="766" y="838" class="h">Supplied CSV datasets</text><text x="766" y="862" class="s">product_catalogue (25) → products table</text><text x="766" y="884" class="s">smb_leads (5,000) → analytics, attach rates, model</text><text x="766" y="906" class="s">mock_gstin_registry (3,534) · mock_udyam_registry (2,723)</text>
+  <rect class="data" x="1190" y="810" width="360" height="130"/><text x="1206" y="838" class="h">External (optional)</text><text x="1206" y="862" class="s">Anthropic API (LLM) - key only on server</text><text x="1206" y="884" class="s">No key → rules provider, app unaffected</text><text x="1206" y="906" class="s">Payment gateway: simulated</text>
+
+  <!-- data flow arrows -->
+  <path d="M200 720 L200 765" stroke="#1c1c21" stroke-width="2" marker-end="url(#arr)" marker-start="url(#arr)"/>
+  <path d="M550 720 L550 765" stroke="#1c1c21" stroke-width="2" marker-end="url(#arr)" marker-start="url(#arr)"/>
+  <path d="M960 720 L960 765" stroke="#1c1c21" stroke-width="2" marker-end="url(#arr)" marker-start="url(#arr)"/>
+  <path d="M1370 720 L1370 765" stroke="#1c1c21" stroke-width="2" marker-end="url(#arr)" marker-start="url(#arr)"/>
+  <path d="M352 560 L368 560" stroke="#e40000" stroke-width="3" marker-end="url(#arrR)" marker-start="url(#arrR)"/>
+  <text x="214" y="466" class="s" style="fill:#e40000;font-weight:700">facts ↔ wording</text>
+  <path d="M200 438 L200 470" stroke="#1c1c21" stroke-width="2" marker-end="url(#arr)"/>
+  <path d="M550 438 L550 470" stroke="#1c1c21" stroke-width="2" marker-end="url(#arr)"/>
+  <path d="M960 438 L960 470" stroke="#1c1c21" stroke-width="2" marker-end="url(#arr)"/>
+  <path d="M1370 438 L1370 470" stroke="#1c1c21" stroke-width="2" marker-end="url(#arr)"/>
+</svg>

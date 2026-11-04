@@ -1,0 +1,10 @@
+backend/.venv
+backend/tests
+**/__pycache__
+frontend
+e2e
+docs
+storage
+6ae1873397bc1_digital
+assignment/sync
+.env
