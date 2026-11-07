@@ -2,7 +2,7 @@
 
 AI-assisted, digital-first onboarding for small businesses: **advisor -> bundle & live quote -> checkout -> Smart KYC -> order tracking**, plus a back-office dashboard. Built for the Airtel SYNC / YTL Hackathon 2026, Track A (*Project Udyam Digital*).
 
-![architecture](docs/architecture.png)
+[![Solution architecture and data flows](docs/Architecture_Flow.png)](docs/Architecture_Flow.pdf)
 
 ## What's in the box
 | Capability | Where |
@@ -14,7 +14,31 @@ AI-assisted, digital-first onboarding for small businesses: **advisor -> bundle 
 | Order tracker, installation slots, activation | `/orders`, `/orders/[id]` |
 | Admin: funnel, segments, leads + propensity, orders, KYC queue, unclosed advisor leads | `/admin` |
 
-Deliverables: [architecture diagram](docs/architecture.png) · [business case deck](docs/Udyam_Digital_Business_Case.pptx) · [privacy note](docs/PRIVACY.md) · [3-minute demo script](docs/DEMO_SCRIPT.md).
+Deliverables: [solution architecture & data flows (PDF)](docs/Architecture_Flow.pdf) · [data workflow (PDF)](docs/Data_Workflow.pdf) · [business case deck (10 slides)](docs/Udyam_Digital_Business_Case.pptx) · [1-page data privacy & security note (PDF)](docs/Privacy_Note_1page.pdf) · [3-minute demo script](docs/DEMO_SCRIPT.md).
+
+## Architecture, data workflow and privacy
+
+### Solution architecture and data flows
+[![Solution architecture and data flows](docs/Architecture_Flow.png)](docs/Architecture_Flow.pdf)
+
+Red outline = deterministic business logic (the source of truth) · blue = AI (interprets and phrases only) · grey = data · dashed = external service. The nine numbered flows (owner message -> catalogue engine -> advisor wording -> LLM guard -> order -> payment -> KYC -> activation -> admin analytics) are listed under the diagram. [Open the PDF](docs/Architecture_Flow.pdf).
+
+### Data workflow: how data is converted and processed
+[![Data workflow](docs/Data_Workflow.png)](docs/Data_Workflow.pdf)
+
+Four lanes: **A** reference data (CSVs -> typed records, analytics, attach rates, propensity model) · **B** advice and quote (words -> needs -> bundle -> price -> explanation) · **C** order to activation (quote -> order -> payment -> install slot -> activated) · **D** Smart KYC (upload -> OCR -> parse -> validate and look up -> match -> verdict). [Open the PDF](docs/Data_Workflow.pdf).
+
+### Data privacy and security note (1 page)
+The data pack is synthetic, but it is treated as real personal data under the **DPDP Act, 2023**.
+- **Consent first**: a dedicated consent screen (purposes, retention, right to delete) comes before any document upload; a customer can decline and verify through the field team instead.
+- **Minimal collection**: exactly four KYC documents, asked only after consent. OCR runs on our own server, so documents never go to a third party or to the AI provider.
+- **Identifiers are masked** in every API response, screen and log, and encrypted in the database. Files are encrypted at rest (Fernet/AES) under random names.
+- **30-day retention**: documents and extracted data are purged automatically, and the customer can delete them and withdraw consent at any time. Only the KYC outcome stays as the audit record.
+- **AI is guarded**: it only receives typed text, a short history and catalogue facts, and any reply containing a rupee amount or product the engine did not produce is dropped. Prices, eligibility and KYC verdicts are rule-based.
+- **Humans stay in the loop**: borderline KYC cases go to a reviewer; every rejection states the reason and the fix.
+- **Known gaps** are listed honestly in the note (single-process rate limiter, encryption key derived from the JWT secret unless `ENCRYPTION_KEY` is set, no DPIA / breach workflow / DigiLocker yet).
+
+[Read the full 1-page note (PDF)](docs/Privacy_Note_1page.pdf) · [PRIVACY.md](docs/PRIVACY.md)
 
 ## Quick start (Windows or macOS/Linux)
 Prerequisites: Python 3.12 (3.11-3.13 work; **not 3.14** - no onnxruntime wheels), Node 20+.
