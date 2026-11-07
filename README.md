@@ -4,6 +4,12 @@ AI-assisted, digital-first onboarding for small businesses: **advisor -> bundle 
 
 [![Solution architecture and data flows](docs/Architecture_Flow.png)](docs/Architecture_Flow.pdf)
 
+## Demo video (3 minutes)
+
+▶ **[Watch the demo video](docs/demo_video.mp4)**
+
+> Opens GitHub's built-in video player. If it does not play in your browser, click **Download raw file** on that page.
+
 ## What's in the box
 | Capability | Where |
 |---|---|
