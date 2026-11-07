@@ -45,6 +45,7 @@ export interface SavedQuote { id: string; journey_id: string; term_months: numbe
 
 export interface AdvisorReply {
   reply: string; question?: string | null; chips: string[]; recommendation_ready: boolean; provider: string;
+  understood?: string[]; progress?: { asked: number; max: number };
   summary?: { tier: string; monthly_total: number; setup_total: number; items: number };
 }
 
@@ -70,4 +71,23 @@ export interface KycCase {
   uploaded: Record<string, { filename: string; uploaded_at: string; purge_after: string | null }>;
   declared: Record<string, string | boolean>; result: KycReport | null;
   notice: { version: string; purposes: string[]; retention_days: number }; doc_labels: Record<string, string>;
+}
+
+export type PaymentMethod = "upi" | "card" | "netbanking";
+export type PaymentStatus = "created" | "pending" | "succeeded" | "failed" | "expired" | "cancelled";
+export type NextAction =
+  | { type: "upi_collect"; message: string }
+  | { type: "upi_intent"; message: string; intent_url: string }
+  | { type: "redirect"; message: string; url: string; bank: string }
+  | { type: "card_otp"; message: string }
+  | { type: "hosted_checkout"; message: string; key_id: string; gateway_order_id: string; amount: number; currency: string; name: string; description: string; prefill: Record<string, string> };
+export interface Payment {
+  id: string; order_id: string; method: PaymentMethod; method_label: string; description: string; amount: number; amount_paise: number; currency: string;
+  status: PaymentStatus; next_action: NextAction | null; failure_code: string | null; failure_message: string | null; details: Record<string, unknown>;
+  attempt_no: number; receipt: string; gateway: string; expires_at: string; paid_at: string | null; created_at: string; order_payment_status?: string;
+}
+export interface PaymentMethods {
+  gateway: string; hosted_checkout: boolean; expiry_minutes: number;
+  methods: { id: PaymentMethod; label: string }[]; banks: { code: string; name: string }[];
+  sandbox_hints?: Record<PaymentMethod, string[]>;
 }

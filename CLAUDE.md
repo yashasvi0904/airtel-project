@@ -10,7 +10,7 @@ assignment/            ORIGINAL material, extracted from the two ZIPs. Read-only
 6ae1873397bc1_digital/ the original ZIPs as supplied (untouched)
 backend/               FastAPI app (app/), tests (tests/), venv (.venv, git-ignored)
 frontend/              Next.js 16 + React 19 + TypeScript + Tailwind 4 app
-e2e/journey.py         Playwright browser test of the whole customer journey
+e2e/journey.py         Playwright browser test of the whole customer journey (+ hindi.py, phone_audit.py, language_audit.py, voice.py, pwa.py)
 docs/                  ARCHITECTURE, API, DATA_ANALYSIS, IMPLEMENTATION_PLAN, PROGRESS, PRIVACY, TESTING, DEMO_SCRIPT, BUSINESS_CASE, architecture diagram, slides
 scripts/               dev.ps1 / dev.sh, build_deck.py
 storage/               runtime only: SQLite db, encrypted uploads, logs (git-ignored)
@@ -39,8 +39,12 @@ The LLM **interprets** the customer's words and **explains** results. Everything
 4. **Contract term** = one term for the bundle, >= the longest `min_contract_months`; options 12/24 (plus the minimum).
 5. **OCR**: RapidOCR (PaddleOCR PP-OCR models on ONNX Runtime). PaddlePaddle itself has no wheels for recent Pythons. The Udyam number is not printed on any specimen certificate, so Udyam is looked up by number (if the applicant enters it) or by enterprise name + city + state.
 6. **Database**: SQLite by default, PostgreSQL via `DATABASE_URL` (psycopg installed, `docker-compose.yml` provided). Only SQLite has been exercised here.
-7. **Payments are simulated** (success/fail toggle). **LLM**: the Anthropic provider is implemented but could not be exercised without an API key; the rules provider is what was tested.
-8. Hindi is supported end-to-end in the advisor (templates) and key UI strings; other Indian languages need the LLM provider.
+7. **Payments** go through `services/payments/` (UPI collect+QR, net banking redirect, card+OTP) behind a `Gateway` interface: `sandbox` (default, dev only, refuses `ENVIRONMENT=production`) and `razorpay` (never run live). Amount is computed server-side in paise; card data is never stored; webhooks are HMAC-verified and exactly-once. No refunds or recurring billing. See `docs/PAYMENTS.md`. **LLM**: providers are `anthropic`, `gemini` (REST, free AI Studio key; exercised live) and the offline rules provider (`LLM_PROVIDER=auto|anthropic|gemini|mock`). The Anthropic provider has never run (no API credit). Model ids drift: `GEMINI_MODEL=gemini-flash-lite-latest` is an alias chosen because the larger flash models returned 503/timeouts on the free tier.
+8. **Ten languages, phone-first** (hi, en, mr, kn, gu, te, ta, bn, pa, ml: what the dataset's leads prefer). UI text is `tr("English text", vars)` (constants: `tx(...)`, server sentences: `lm(...)`); translations live in `frontend/src/lib/locales/<lang>.json`, produced by `scripts/extract_strings.py` -> `scripts/translate_locales.py` (Gemini, resumable; also syncs to `backend/app/data/locales`) and `scripts/translate_advisor.py`; the backend localises engine sentences with `services/i18n.py` from the same files. They are MACHINE translations (no native review yet). After adding any English string run extract + translate; `tests/test_localization.py` fails otherwise. Admin pages stay English. Check phone layout with `e2e/phone_audit.py` / `e2e/language_audit.py`; overflow must be measured against `screen.width`, not `innerWidth`. See `docs/LOCALIZATION.md`.
+
+9. **Advisor v2** (`docs/ADVISOR.md`): deterministic NLU (`slots.extract_rules`) + per-segment discovery plan (`slots.next_question`) + context-aware yes/no; LLM extraction is merged with the rules (union, rejects win). Never ask a question whose answer is known; clarify once; max 5 questions. **Voice**: `frontend/src/lib/speech.ts` (browser speech, else MediaRecorder -> `POST /journeys/{id}/advisor/transcribe` -> Gemini); needs HTTPS or localhost; clips are never stored. `docs/REQUIREMENTS_CHECK.md` maps the case PDF to evidence and lists gaps.
+
+10. **Installable PWA**: `app/manifest.ts`, `public/sw.js` (registered in production only; never touches `/api`, caches only hashed `/_next/static` + icons, offline page), `components/Pwa.tsx` (install banner/menu, iOS hint), `Permissions-Policy` in `next.config.ts`, KYC *Take photo* + `shrinkPhoto()` in `orders/[id]/kyc/page.tsx`. Bump `VERSION` in `sw.js` to flush caches. Verified by `e2e/pwa.py` (needs the production build). `scripts/share_demo.ps1` publishes a fresh demo instance through a Cloudflare tunnel (HTTPS = installable on a phone).
 
 ## Commands
 ```

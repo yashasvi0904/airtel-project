@@ -51,7 +51,7 @@ Error codes in `validate_selection`: `empty, unknown_product, duplicate, quantit
 |---|---|
 | `POST /api/orders` `{quote_id, accept_terms}` | place order -> `UD-YYYYMMDD-XXXXXX` (idempotent per quote) |
 | `GET /api/orders`, `GET /api/orders/{id}` | list / detail with `tracker.steps`, `tracker.next_action`, `events`, `items`, `totals` |
-| `POST /api/orders/{id}/pay` `{method: upi\|card\|netbanking, simulate: success\|fail}` | simulated payment |
+| `POST /api/orders/{id}/payments` (+ `Idempotency-Key`), `GET /api/payments/{id}`, `GET /api/orders/{id}/payments`, `POST /api/payments/{id}/otp\|confirm\|cancel`, `POST /api/payments/webhook/{gateway}` | UPI / net banking / card payments - see [PAYMENTS.md](PAYMENTS.md) |
 | `GET /api/orders/{id}/slots`, `POST /api/orders/{id}/schedule` `{date,window}` | install slots; requires paid + KYC verified/approved |
 
 ## Smart KYC (customer)

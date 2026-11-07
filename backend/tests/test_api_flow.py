@@ -2,6 +2,7 @@
 import pytest
 
 from app.config import get_settings
+from tests.payhelp import pay_upi
 
 DOCS = get_settings().data_dir / "kyc_documents"
 PROFILE = {
@@ -146,14 +147,15 @@ def test_other_customers_cannot_see_the_order(client, order):
     assert client.get("/api/admin/overview").status_code == 401
 
 
-def test_payment_simulation_failure_then_success(client, order):
+def test_payment_failure_then_success_unlocks_the_order(client, order):
     h, oid = order["h"], order["id"]
     assert client.post(f"/api/orders/{oid}/schedule", json={"date": "2026-07-25", "window": "morning"}, headers=h).status_code == 409
-    f = client.post(f"/api/orders/{oid}/pay", json={"method": "upi", "simulate": "fail"}, headers=h).json()
-    assert f["payment_status"] == "failed"
-    p = client.post(f"/api/orders/{oid}/pay", json={"method": "upi"}, headers=h).json()
-    assert p["payment_status"] == "paid"
-    assert client.post(f"/api/orders/{oid}/pay", json={"method": "upi"}, headers=h).status_code == 409
+    bad = client.post(f"/api/orders/{oid}/payments", json={"method": "upi", "upi": {"vpa": "fail@okhdfc"}}, headers=h).json()
+    assert client.get(f"/api/payments/{bad['id']}", headers=h).json()["status"] == "failed"
+    assert client.get(f"/api/orders/{oid}", headers=h).json()["payment_status"] == "failed"
+    pay_upi(client, oid, h)
+    assert client.get(f"/api/orders/{oid}", headers=h).json()["payment_status"] == "paid"
+    assert client.post(f"/api/orders/{oid}/payments", json={"method": "upi", "upi": {"vpa": "ravi@okhdfc"}}, headers=h).status_code == 409  # already paid
 
 
 def test_kyc_requires_consent_before_upload(client, order):
@@ -268,7 +270,7 @@ def _order_for(client, email, name, sel_items, headers=None):
     q = client.post(f"/api/journeys/{j['id']}/quote").json()
     h = headers or auth(client, email, name)
     o = client.post("/api/orders", json={"quote_id": q["id"], "accept_terms": True}, headers=h).json()
-    assert client.post(f"/api/orders/{o['id']}/pay", json={"method": "card"}, headers=h).json()["payment_status"] == "paid"
+    pay_upi(client, o["id"], h)
     return o["id"], h
 
 

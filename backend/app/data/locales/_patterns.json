@@ -1,0 +1,553 @@
+[
+ {
+  "re": "^A\\ second\\ payment\\ of\\ (.+?)\\ \\((.+?)\\)\\ was\\ received\\ for\\ an\\ already\\-paid\\ order\\ and\\ needs\\ a\\ refund\\.\\ Receipt\\ (.+?)\\.$",
+  "tpl": "A second payment of {p1} ({p2}) was received for an already-paid order and needs a refund. Receipt {p3}.",
+  "names": [
+   "p1",
+   "p2",
+   "p3"
+  ]
+ },
+ {
+  "re": "^The\\ gateway\\ reports\\ a\\ success\\ for\\ a\\ payment\\ we\\ recorded\\ as\\ (.+?)\\.\\ Please\\ reconcile\\ manually\\ \\(receipt\\ (.+?)\\)\\.$",
+  "tpl": "The gateway reports a success for a payment we recorded as {p1}. Please reconcile manually (receipt {p2}).",
+  "names": [
+   "p1",
+   "p2"
+  ]
+ },
+ {
+  "re": "^It\\ is\\ 1\\-2\\ characters\\ away\\ from\\ registered\\ GSTIN\\ (.+?),\\ so\\ it\\ looks\\ altered\\ or\\ mistyped\\.$",
+  "tpl": "It is 1-2 characters away from registered GSTIN {p1}, so it looks altered or mistyped.",
+  "names": [
+   "p1"
+  ]
+ },
+ {
+  "re": "^With\\ about\\ (.+?)\\ people\\ per\\ site,\\ a\\ 1\\ Gbps\\ line\\ with\\ priority\\ support\\ avoids\\ slowdowns\\.$",
+  "tpl": "With about {p1} people per site, a 1 Gbps line with priority support avoids slowdowns.",
+  "names": [
+   "p1"
+  ]
+ },
+ {
+  "re": "^With\\ (.+?)\\ sites,\\ central\\ SD\\-WAN\\ management\\ gives\\ one\\ control\\ point\\ and\\ one\\ bill\\.$",
+  "tpl": "With {p1} sites, central SD-WAN management gives one control point and one bill.",
+  "names": [
+   "p1"
+  ]
+ },
+ {
+  "re": "^The\\ bill\\ is\\ (.+?)\\ days\\ old;\\ address\\ proof\\ must\\ be\\ no\\ older\\ than\\ (.+?)\\ days\\.$",
+  "tpl": "The bill is {p1} days old; address proof must be no older than {p2} days.",
+  "names": [
+   "p1",
+   "p2"
+  ]
+ },
+ {
+  "re": "^This\\ GSTIN\\ is\\ (.+?);\\ products\\ that\\ require\\ an\\ active\\ GSTIN\\ cannot\\ be\\ sold\\.$",
+  "tpl": "This GSTIN is {p1}; products that require an active GSTIN cannot be sold.",
+  "names": [
+   "p1"
+  ]
+ },
+ {
+  "re": "^Checksum\\ digit\\ should\\ be\\ (.+?)\\ \\-\\ the\\ number\\ is\\ mistyped\\ or\\ altered\\.$",
+  "tpl": "Checksum digit should be {p1} - the number is mistyped or altered.",
+  "names": [
+   "p1"
+  ]
+ },
+ {
+  "re": "^GST\\ registration\\ is\\ in\\ the\\ name\\ of\\ (.+?),\\ but\\ the\\ ID\\ is\\ for\\ (.+?)\\.$",
+  "tpl": "GST registration is in the name of {p1}, but the ID is for {p2}.",
+  "names": [
+   "p1",
+   "p2"
+  ]
+ },
+ {
+  "re": "^Your\\ GSTIN\\ is\\ (.+?)\\ in\\ the\\ registry;\\ an\\ active\\ GSTIN\\ is\\ required\\.$",
+  "tpl": "Your GSTIN is {p1} in the registry; an active GSTIN is required.",
+  "names": [
+   "p1"
+  ]
+ },
+ {
+  "re": "^(.+?)\\ payment\\ was\\ cancelled\\ before\\ completion\\.\\ No\\ money\\ was\\ taken\\.$",
+  "tpl": "{p1} payment was cancelled before completion. No money was taken.",
+  "names": [
+   "p1"
+  ]
+ },
+ {
+  "re": "^(.+?)\\ address\\ does\\ not\\ match\\ the\\ (.+?)\\ \\(similarity\\ (.+?)%\\)\\.$",
+  "tpl": "{p1} address does not match the {p2} (similarity {p3}%).",
+  "names": [
+   "p1",
+   "p2",
+   "p3"
+  ]
+ },
+ {
+  "re": "^Removed\\ (.+?):\\ no\\ eligible\\ prerequisite\\ product\\ is\\ available\\.$",
+  "tpl": "Removed {p1}: no eligible prerequisite product is available.",
+  "names": [
+   "p1"
+  ]
+ },
+ {
+  "re": "^Installation\\ cannot\\ be\\ scheduled\\ while\\ the\\ order\\ is\\ '(.+?)'$",
+  "tpl": "Installation cannot be scheduled while the order is '{p1}'",
+  "names": [
+   "p1"
+  ]
+ },
+ {
+  "re": "^(.+?)\\ needs\\ one\\ of\\ (.+?);\\ this\\ is\\ the\\ best\\ fit\\ for\\ you\\.$",
+  "tpl": "{p1} needs one of {p2}; this is the best fit for you.",
+  "names": [
+   "p1",
+   "p2"
+  ]
+ },
+ {
+  "re": "^(.+?)\\ address\\ agrees\\ with\\ the\\ (.+?)\\ \\(similarity\\ (.+?)%\\)\\.$",
+  "tpl": "{p1} address agrees with the {p2} (similarity {p3}%).",
+  "names": [
+   "p1",
+   "p2",
+   "p3"
+  ]
+ },
+ {
+  "re": "^Unknown\\ PAYMENT_GATEWAY\\ '(.+?)'\\ \\(use\\ sandbox\\ or\\ razorpay\\)$",
+  "tpl": "Unknown PAYMENT_GATEWAY '{p1}' (use sandbox or razorpay)",
+  "names": [
+   "p1"
+  ]
+ },
+ {
+  "re": "^This\\ payment\\ is\\ already\\ (.+?)\\ and\\ cannot\\ be\\ cancelled\\.$",
+  "tpl": "This payment is already {p1} and cannot be cancelled.",
+  "names": [
+   "p1"
+  ]
+ },
+ {
+  "re": "^(.+?)\\ \\((.+?)\\)\\ is\\ not\\ listed\\ as\\ an\\ owner\\ or\\ partner\\.$",
+  "tpl": "{p1} ({p2}) is not listed as an owner or partner.",
+  "names": [
+   "p1",
+   "p2"
+  ]
+ },
+ {
+  "re": "^(.+?)\\ is\\ the\\ proprietor\\ named\\ on\\ the\\ GST\\ registration\\.$",
+  "tpl": "{p1} is the proprietor named on the GST registration.",
+  "names": [
+   "p1"
+  ]
+ },
+ {
+  "re": "^(.+?)\\ received\\ via\\ (.+?)\\ \\((.+?)\\)\\.\\ Receipt\\ (.+?)\\.(.+?)$",
+  "tpl": "{p1} received via {p2} ({p3}). Receipt {p4}.{p5}",
+  "names": [
+   "p1",
+   "p2",
+   "p3",
+   "p4",
+   "p5"
+  ]
+ },
+ {
+  "re": "^Sold\\ only\\ in\\ tier\\ (.+?)\\ cities;\\ (.+?)\\ is\\ tier\\ (.+?)\\.$",
+  "tpl": "Sold only in tier {p1} cities; {p2} is tier {p3}.",
+  "names": [
+   "p1",
+   "p2",
+   "p3"
+  ]
+ },
+ {
+  "re": "^The\\ utility\\ bill\\ is\\ (.+?)\\ days\\ old\\ \\(limit\\ (.+?)\\)\\.$",
+  "tpl": "The utility bill is {p1} days old (limit {p2}).",
+  "names": [
+   "p1",
+   "p2"
+  ]
+ },
+ {
+  "re": "^Needs\\ at\\ least\\ (.+?)\\ employees\\ \\(you\\ have\\ (.+?)\\)\\.$",
+  "tpl": "Needs at least {p1} employees (you have {p2}).",
+  "names": [
+   "p1",
+   "p2"
+  ]
+ },
+ {
+  "re": "^The\\ bill\\ is\\ dated\\ (.+?),\\ which\\ is\\ in\\ the\\ future\\.$",
+  "tpl": "The bill is dated {p1}, which is in the future.",
+  "names": [
+   "p1"
+  ]
+ },
+ {
+  "re": "^You\\ entered\\ (.+?)\\ but\\ the\\ certificate\\ shows\\ (.+?)\\.$",
+  "tpl": "You entered {p1} but the certificate shows {p2}.",
+  "names": [
+   "p1",
+   "p2"
+  ]
+ },
+ {
+  "re": "^Taking\\ you\\ to\\ (.+?)\\ to\\ authorise\\ the\\ payment\\.\\.\\.$",
+  "tpl": "Taking you to {p1} to authorise the payment...",
+  "names": [
+   "p1"
+  ]
+ },
+ {
+  "re": "^(.+?)\\ payment\\ of\\ (.+?)\\ started\\ \\(attempt\\ (.+?)\\)\\.$",
+  "tpl": "{p1} payment of {p2} started (attempt {p3}).",
+  "names": [
+   "p1",
+   "p2",
+   "p3"
+  ]
+ },
+ {
+  "re": "^(.+?)\\ registry\\ records\\ share\\ this\\ name\\ and\\ city\\.$",
+  "tpl": "{p1} registry records share this name and city.",
+  "names": [
+   "p1"
+  ]
+ },
+ {
+  "re": "^That\\ OTP\\ is\\ incorrect\\.\\ (.+?)\\ attempt\\(s\\)\\ left\\.$",
+  "tpl": "That OTP is incorrect. {p1} attempt(s) left.",
+  "names": [
+   "p1"
+  ]
+ },
+ {
+  "re": "^The\\ file\\ uploaded\\ as\\ (.+?)\\ looks\\ like\\ a\\ (.+?)\\.$",
+  "tpl": "The file uploaded as {p1} looks like a {p2}.",
+  "names": [
+   "p1",
+   "p2"
+  ]
+ },
+ {
+  "re": "^The\\ security\\ code\\ \\(CVV\\)\\ must\\ be\\ (.+?)\\ digits\\.$",
+  "tpl": "The security code (CVV) must be {p1} digits.",
+  "names": [
+   "p1"
+  ]
+ },
+ {
+  "re": "^(.+?)%\\ of\\ activated\\ (.+?)\\ customers\\ bought\\ this\\.$",
+  "tpl": "{p1}% of activated {p2} customers bought this.",
+  "names": [
+   "p1",
+   "p2"
+  ]
+ },
+ {
+  "re": "^Certificate\\ says\\ '(.+?)',\\ registry\\ says\\ '(.+?)'\\.$",
+  "tpl": "Certificate says '{p1}', registry says '{p2}'.",
+  "names": [
+   "p1",
+   "p2"
+  ]
+ },
+ {
+  "re": "^Needs\\ at\\ least\\ (.+?)\\ sites\\ \\(you\\ have\\ (.+?)\\)\\.$",
+  "tpl": "Needs at least {p1} sites (you have {p2}).",
+  "names": [
+   "p1",
+   "p2"
+  ]
+ },
+ {
+  "re": "^Designation\\ '(.+?)'\\ can\\ sign\\ for\\ the\\ business\\.$",
+  "tpl": "Designation '{p1}' can sign for the business.",
+  "names": [
+   "p1"
+  ]
+ },
+ {
+  "re": "^(.+?)\\ has\\ a\\ minimum\\ contract\\ of\\ (.+?)\\ months\\.$",
+  "tpl": "{p1} has a minimum contract of {p2} months.",
+  "names": [
+   "p1",
+   "p2"
+  ]
+ },
+ {
+  "re": "^Cannot\\ move\\ an\\ order\\ from\\ '(.+?)'\\ to\\ '(.+?)'$",
+  "tpl": "Cannot move an order from '{p1}' to '{p2}'",
+  "names": [
+   "p1",
+   "p2"
+  ]
+ },
+ {
+  "re": "^Certificate\\ city\\ '(.+?)'\\ vs\\ registry\\ '(.+?)'\\.$",
+  "tpl": "Certificate city '{p1}' vs registry '{p2}'.",
+  "names": [
+   "p1",
+   "p2"
+  ]
+ },
+ {
+  "re": "^Registration\\ is\\ (.+?)\\ in\\ the\\ GST\\ registry\\.$",
+  "tpl": "Registration is {p1} in the GST registry.",
+  "names": [
+   "p1"
+  ]
+ },
+ {
+  "re": "^(.+?)\\ is\\ not\\ a\\ valid\\ Udyam\\ number\\ format\\.$",
+  "tpl": "{p1} is not a valid Udyam number format.",
+  "names": [
+   "p1"
+  ]
+ },
+ {
+  "re": "^The\\ (.+?)\\ is\\ too\\ blurry\\ for\\ us\\ to\\ read\\.$",
+  "tpl": "The {p1} is too blurry for us to read.",
+  "names": [
+   "p1"
+  ]
+ },
+ {
+  "re": "^(.+?)\\ has\\ a\\ valid\\ 15\\-character\\ structure\\.$",
+  "tpl": "{p1} has a valid 15-character structure.",
+  "names": [
+   "p1"
+  ]
+ },
+ {
+  "re": "^(.+?)\\ was\\ not\\ found\\ in\\ the\\ GST\\ registry\\.$",
+  "tpl": "{p1} was not found in the GST registry.",
+  "names": [
+   "p1"
+  ]
+ },
+ {
+  "re": "^GST\\ is\\ in\\ (.+?)\\ but\\ Udyam\\ is\\ in\\ (.+?)\\.$",
+  "tpl": "GST is in {p1} but Udyam is in {p2}.",
+  "names": [
+   "p1",
+   "p2"
+  ]
+ },
+ {
+  "re": "^Technician\\ visit\\ booked\\ for\\ (.+?),\\ (.+?)\\.$",
+  "tpl": "Technician visit booked for {p1}, {p2}.",
+  "names": [
+   "p1",
+   "p2"
+  ]
+ },
+ {
+  "re": "^Bill\\ is\\ (.+?)\\ days\\ old\\ \\(limit\\ (.+?)\\)\\.$",
+  "tpl": "Bill is {p1} days old (limit {p2}).",
+  "names": [
+   "p1",
+   "p2"
+  ]
+ },
+ {
+  "re": "^Registered\\ as\\ (.+?)\\ \\((.+?)\\ enterprise\\)\\.$",
+  "tpl": "Registered as {p1} ({p2} enterprise).",
+  "names": [
+   "p1",
+   "p2"
+  ]
+ },
+ {
+  "re": "^This\\ looks\\ like\\ a\\ (.+?),\\ not\\ a\\ (.+?)\\.$",
+  "tpl": "This looks like a {p1}, not a {p2}.",
+  "names": [
+   "p1",
+   "p2"
+  ]
+ },
+ {
+  "re": "^Added\\ (.+?)\\ because\\ (.+?)\\ requires\\ it\\.$",
+  "tpl": "Added {p1} because {p2} requires it.",
+  "names": [
+   "p1",
+   "p2"
+  ]
+ },
+ {
+  "re": "^(.+?)\\ is\\ not\\ a\\ valid\\ GSTIN\\ structure\\.$",
+  "tpl": "{p1} is not a valid GSTIN structure.",
+  "names": [
+   "p1"
+  ]
+ },
+ {
+  "re": "^Order\\ placed\\ for\\ (.+?)\\ product\\(s\\)\\.$",
+  "tpl": "Order placed for {p1} product(s).",
+  "names": [
+   "p1"
+  ]
+ },
+ {
+  "re": "^A\\ (.+?)\\ payment\\ cannot\\ become\\ (.+?)$",
+  "tpl": "A {p1} payment cannot become {p2}",
+  "names": [
+   "p1",
+   "p2"
+  ]
+ },
+ {
+  "re": "^The\\ signatory\\ ID\\ expired\\ on\\ (.+?)\\.$",
+  "tpl": "The signatory ID expired on {p1}.",
+  "names": [
+   "p1"
+  ]
+ },
+ {
+  "re": "^Both\\ are\\ registered\\ in\\ (.+?)\\.$",
+  "tpl": "Both are registered in {p1}.",
+  "names": [
+   "p1"
+  ]
+ },
+ {
+  "re": "^Unknown\\ document\\ type\\ '(.+?)'\\.$",
+  "tpl": "Unknown document type '{p1}'.",
+  "names": [
+   "p1"
+  ]
+ },
+ {
+  "re": "^(.+?)\\ appears\\ more\\ than\\ once\\.$",
+  "tpl": "{p1} appears more than once.",
+  "names": [
+   "p1"
+  ]
+ },
+ {
+  "re": "^Invalid\\ quantity\\ for\\ (.+?)\\.$",
+  "tpl": "Invalid quantity for {p1}.",
+  "names": [
+   "p1"
+  ]
+ },
+ {
+  "re": "^(.+?)\\ needs\\ one\\ of:\\ (.+?)\\.$",
+  "tpl": "{p1} needs one of: {p2}.",
+  "names": [
+   "p1",
+   "p2"
+  ]
+ },
+ {
+  "re": "^Technician\\ visit\\ on\\ (.+?)\\.$",
+  "tpl": "Technician visit on {p1}.",
+  "names": [
+   "p1"
+  ]
+ },
+ {
+  "re": "^The\\ ID\\ expired\\ on\\ (.+?)\\.$",
+  "tpl": "The ID expired on {p1}.",
+  "names": [
+   "p1"
+  ]
+ },
+ {
+  "re": "^(.+?)\\ payment\\ (.+?):\\ (.+?)$",
+  "tpl": "{p1} payment {p2}: {p3}",
+  "names": [
+   "p1",
+   "p2",
+   "p3"
+  ]
+ },
+ {
+  "re": "^Upload\\ your\\ (.+?)\\ here\\.$",
+  "tpl": "Upload your {p1} here.",
+  "names": [
+   "p1"
+  ]
+ },
+ {
+  "re": "^This\\ payment\\ is\\ (.+?)\\.$",
+  "tpl": "This payment is {p1}.",
+  "names": [
+   "p1"
+  ]
+ },
+ {
+  "re": "^The\\ (.+?)\\ is\\ missing\\.$",
+  "tpl": "The {p1} is missing.",
+  "names": [
+   "p1"
+  ]
+ },
+ {
+  "re": "^Unknown\\ product\\ (.+?)\\.$",
+  "tpl": "Unknown product {p1}.",
+  "names": [
+   "p1"
+  ]
+ },
+ {
+  "re": "^(.+?)\\ is\\ well\\-formed\\.$",
+  "tpl": "{p1} is well-formed.",
+  "names": [
+   "p1"
+  ]
+ },
+ {
+  "re": "^You\\ asked\\ for\\ (.+?)\\.$",
+  "tpl": "You asked for {p1}.",
+  "names": [
+   "p1"
+  ]
+ },
+ {
+  "re": "^Registered\\ to\\ (.+?)\\.$",
+  "tpl": "Registered to {p1}.",
+  "names": [
+   "p1"
+  ]
+ },
+ {
+  "re": "^Upload\\ your\\ (.+?)\\.$",
+  "tpl": "Upload your {p1}.",
+  "names": [
+   "p1"
+  ]
+ },
+ {
+  "re": "^Valid\\ until\\ (.+?)\\.$",
+  "tpl": "Valid until {p1}.",
+  "names": [
+   "p1"
+  ]
+ },
+ {
+  "re": "^(.+?)\\ ending\\ (.+?)$",
+  "tpl": "{p1} ending {p2}",
+  "names": [
+   "p1",
+   "p2"
+  ]
+ },
+ {
+  "re": "^(.+?)\\ provided$",
+  "tpl": "{p1} provided",
+  "names": [
+   "p1"
+  ]
+ }
+]

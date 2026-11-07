@@ -9,7 +9,9 @@ AI-assisted, digital-first onboarding for small businesses: **advisor -> bundle 
 |---|---|
 | Landing page, onboarding, AI advisor chat (EN/HI) | `frontend/src/app/{page,onboarding,advisor}` |
 | Recommendation with eligibility + dependencies, optional add-ons, live repricing | `/bundle`, `backend/app/services/{eligibility,recommender,pricing}.py` |
-| Quote & checkout, order id, simulated payment | `/checkout`, `backend/app/services/orders.py` |
+| Quote & checkout, order id | `/checkout`, `backend/app/services/orders.py` |
+| 10 languages + phone-first UI (voice, sticky checkout bar, 44 px targets) | `frontend/src/lib/{i18n,locales}`, `backend/app/services/i18n.py`, [docs/LOCALIZATION.md](docs/LOCALIZATION.md) |
+| Payments: UPI, net banking, card | `/orders/{id}/pay`, `backend/app/services/payments/`, [docs/PAYMENTS.md](docs/PAYMENTS.md) |
 | Smart KYC: consent, OCR, GSTIN & Udyam lookup, name/address match, missing/invalid/mismatch detection | `/orders/[id]/kyc`, `backend/app/services/kyc/` |
 | Order tracker, installation slots, activation | `/orders`, `/orders/[id]` |
 | Admin: funnel, segments, leads + propensity, orders, KYC queue, unclosed advisor leads | `/admin` |
@@ -76,7 +78,7 @@ Schema is portable (SQLAlchemy, JSON columns), but only SQLite was run in testin
 1. Onboarding: e.g. *Dental clinic, Pune, 14 staff, ₹12,000 budget*, GSTIN `29HLDXH5566X1ZB` (active in the mock registry).
 2. Advisor: answer the questions (or tap the chips), say "recommend".
 3. Bundle: toggle products, switch 12 -> 24 months, watch the price change; try removing broadband while keeping CCTV to see the dependency fix.
-4. Checkout: create an account, confirm, pay (tick "simulate a failed payment" once to see the failure path).
+4. Checkout: create an account, confirm, pay (sandbox: UPI ID `fail@okhdfc` is declined; card `4111 1111 1111 1111` + OTP `123456` succeeds; see docs/PAYMENTS.md).
 5. KYC: give consent, then use **"Demo: use a specimen applicant"** to load K01-K12 from the supplied pack (K03 verifies cleanly; K07 -> manual review; K01 cancelled GSTIN; K06 tampered GSTIN; K11 stale bill; K04 blurry; K05 missing Udyam).
 6. Book the installation slot. Sign in as admin to advance the order (installing -> activated) and see the dashboards.
 
@@ -91,7 +93,7 @@ Results and limitations: [docs/TESTING.md](docs/TESTING.md).
 [CLAUDE.md](CLAUDE.md) · [ARCHITECTURE](docs/ARCHITECTURE.md) · [API](docs/API.md) · [DATA_ANALYSIS](docs/DATA_ANALYSIS.md) · [IMPLEMENTATION_PLAN](docs/IMPLEMENTATION_PLAN.md) · [PROGRESS](docs/PROGRESS.md) · [PRIVACY](docs/PRIVACY.md) · [TESTING](docs/TESTING.md) · [BUSINESS_CASE](docs/BUSINESS_CASE.md)
 
 ## Known limitations (honest list)
-Payments simulated · no DigiLocker / e-sign / WhatsApp / voice front end · Claude provider untested · PostgreSQL untested · only Hindi + English UI copy · KYC tuned on the 47 synthetic specimens (real-world scans will need more OCR hardening) · in-memory rate limiter (single process) · GST rate and price-position policy are assumptions.
+Payments: sandbox gateway only, Razorpay adapter never run live, no refunds / recurring billing · no DigiLocker / e-sign / WhatsApp front end (voice is built) · Claude provider untested · PostgreSQL untested · only Hindi + English UI copy · KYC tuned on the 47 synthetic specimens (real-world scans will need more OCR hardening) · in-memory rate limiter (single process) · GST rate and price-position policy are assumptions.
 
 ## Live deployment (Vercel + Render)
 - Frontend: https://udyam-digital.vercel.app (Vercel project `udyam-digital`, root `frontend/`). It proxies `/api/*` to `BACKEND_URL`, which is baked in at build time.

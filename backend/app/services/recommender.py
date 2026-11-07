@@ -65,9 +65,17 @@ def pick_connectivity(profile: BusinessProfile, needs: dict, catalogue: dict[str
     reasons: list[str] = []
     if needs.get("mobile_only"):
         return None, ["You asked for mobile connectivity only, so no broadband is included."]
+    pref = needs.get("connectivity")
+    asked_for: list[str] = []  # products that match what the customer named, so their reason can say "you asked for ..."
     if needs.get("fibre_available") is False:
         order = ["P04"]
         reasons.append("Fibre is not available at your site, so a plug-and-play 5G wireless link is used instead.")
+    elif pref == "5g":
+        order = asked_for = ["P04"]
+    elif pref == "leased_line":
+        order = asked_for = ["P06", "P05"] if profile.employees >= 80 else ["P05", "P06"]
+    elif pref == "fibre":
+        order = asked_for = ["P03", "P02", "P01"] if eps > 30 else (["P02", "P01", "P03"] if eps > 8 else ["P01", "P02", "P03"])
     elif seg == "mfg":
         order = ["P06", "P05", "P03", "P02"] if profile.employees >= 80 else (["P05", "P03", "P02"] if profile.employees >= 10 else ["P02", "P01"])
     elif seg in ("prof", "multi"):
@@ -80,7 +88,11 @@ def pick_connectivity(profile: BusinessProfile, needs: dict, catalogue: dict[str
         p = catalogue.get(pid)
         if p and check_eligibility(p, profile).ok:
             if not reasons:
+                if pid in asked_for:
+                    reasons.append({"fibre": "You asked for fibre broadband.", "5g": "You asked for a 5G wireless link.",
+                                    "leased_line": "You asked for a dedicated leased line."}[pref])
                 reasons.append(_connectivity_reason(pid, profile, eps))
+                reasons[:] = [" ".join(reasons)] if len(reasons) > 1 else reasons
             return pid, reasons
     return None, ["No broadband product is available for this location and size."]
 
@@ -137,9 +149,11 @@ def build_bundles(profile: BusinessProfile, needs: dict, catalogue: dict[str, Pr
     seg_code = SEGMENT_CODE.get(seg, "micro")
     excluded: list[dict] = []
 
+    rejected_pids = {NEED_PRODUCTS[t] for t in needs.get("rejects", []) if t in NEED_PRODUCTS}
+
     def add(bucket: dict, pid: str, role: str, reason: str, qty: int | None = None):
         p = catalogue.get(pid)
-        if p is None:
+        if p is None or pid in rejected_pids:
             return
         el = check_eligibility(p, profile)
         if not el.ok:
@@ -158,6 +172,13 @@ def build_bundles(profile: BusinessProfile, needs: dict, catalogue: dict[str, Pr
         add(core, conn, "core", conn_reasons[0])
     elif conn_reasons and needs.get("mobile_only") is not True:
         excluded.append({"product_id": "-", "name": "Broadband", "eligibility": {"status": "no", "reasons": [{"code": "none", "message": conn_reasons[0]}], "unlock": []}})
+    wanted_link = {"fibre": ["P01", "P02", "P03"], "5g": ["P04"], "leased_line": ["P05", "P06"]}.get(needs.get("connectivity") or "", [])
+    if wanted_link and conn not in wanted_link and needs.get("fibre_available") is not False:  # they named a link we cannot sell them: say so and what unlocks it
+        blocked = [(pid, check_eligibility(catalogue[pid], profile)) for pid in wanted_link if pid in catalogue]
+        blocked = [(pid, el) for pid, el in blocked if not el.ok]
+        if blocked:
+            pid, el = blocked[0]
+            excluded.append({"product_id": pid, "name": catalogue[pid].product_name, "eligibility": el.as_dict()})
     mobile = "P08" if seg_code in ("multi", "mfg") else "P07"
     if needs.get("wants_mobile", True):
         add(core, mobile, "core", "Business SIMs give you priority care and one bill with your internet." if mobile == "P08"
@@ -218,7 +239,10 @@ def build_bundles(profile: BusinessProfile, needs: dict, catalogue: dict[str, Pr
 
     # term and quotes
     ids = [catalogue[i["product_id"]] for i in tiers["complete"]]
-    result = {"tiers": {}, "excluded": excluded, "notes": list(dict.fromkeys(notes)), "segment": seg, "attach_rates": rates}
+    result = {"tiers": {}, "excluded": excluded, "notes": list(dict.fromkeys(notes)), "segment": seg, "attach_rates": rates, "assumptions": []}
+    sims = next((i for i in tiers["recommended"] if i["product_id"] in ("P07", "P08")), None)
+    if sims and not needs.get("mobile_lines"):
+        result["assumptions"].append({"type": "sims", "n": sims["quantity"], "employees": profile.employees})
     for name, items in tiers.items():
         prods = [catalogue[i["product_id"]] for i in items]
         opts = term_options(prods) if prods else [12]

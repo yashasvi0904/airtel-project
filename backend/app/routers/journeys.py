@@ -1,11 +1,11 @@
 """Business onboarding, AI advisor, recommendations and quotes. Journeys are guest-accessible by unguessable id."""
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, File, HTTPException, UploadFile
 from sqlalchemy.orm import Session
 
 from ..db import get_db
 from ..models import Journey, Quote, User
-from ..schemas import MessageIn, ProfileIn, QuotePreviewIn, SelectionIn
-from ..security import current_user_optional
+from ..schemas import LanguageIn, MessageIn, ProfileIn, QuotePreviewIn, SelectionIn
+from ..security import current_user_optional, voice_limiter
 from ..services import analytics
 from ..services.advisor import engine as advisor
 from ..services.advisor.providers import get_provider
@@ -91,16 +91,58 @@ def update_profile(journey_id: str, body: dict, db: Session = Depends(get_db), u
 def advisor_history(journey_id: str, db: Session = Depends(get_db), user: User | None = Depends(current_user_optional)):
     j = get_journey(journey_id, db, user)
     return {"messages": [{"role": m.role, "content": m.content, "at": m.created_at.isoformat()} for m in j.messages],
-            "provider": get_provider().name, "stage": j.stage}
+            "provider": get_provider().name, "stage": j.stage, **advisor.resume_state(j)}
 
 
 @router.post("/journeys/{journey_id}/advisor/start")
 def advisor_start(journey_id: str, db: Session = Depends(get_db), user: User | None = Depends(current_user_optional)):
     j = get_journey(journey_id, db, user)
     if j.messages:
-        return {"messages": [{"role": m.role, "content": m.content} for m in j.messages], "provider": get_provider().name, "resumed": True}
+        return {"messages": [{"role": m.role, "content": m.content} for m in j.messages], "provider": get_provider().name, "resumed": True, **advisor.resume_state(j)}
     out = advisor.start(db, j)
     return {"messages": [{"role": "assistant", "content": out["reply"]}], **out, "resumed": False}
+
+
+MAX_VOICE_BYTES = 2_000_000  # ~60 s of compressed speech; the browser stops recording well before this
+
+
+@router.post("/journeys/{journey_id}/advisor/transcribe", dependencies=[Depends(voice_limiter)])
+def advisor_transcribe(journey_id: str, file: UploadFile = File(...), db: Session = Depends(get_db), user: User | None = Depends(current_user_optional)):
+    """Speech to text for browsers that cannot do it themselves (or whose speech service is blocked/offline). The clip is sent to the AI
+    provider, turned into text and discarded: it is never written to disk or the database."""
+    from ..services.advisor.providers import AUDIO_TYPES
+
+    j = get_journey(journey_id, db, user)
+    mime = (file.content_type or "audio/webm").split(";")[0].strip().lower()
+    if mime not in AUDIO_TYPES:
+        raise HTTPException(422, "Unsupported audio format")
+    data = file.file.read(MAX_VOICE_BYTES + 1)
+    if len(data) > MAX_VOICE_BYTES:
+        raise HTTPException(413, "That recording is too long. Please speak for under a minute.")
+    if len(data) < 800:
+        return {"text": ""}  # nothing was recorded
+    provider = get_provider()
+    transcribe = getattr(provider, "transcribe", None)
+    if transcribe is None:
+        raise HTTPException(501, "Voice transcription needs the Gemini AI provider to be configured. You can type your answer instead.")
+    try:
+        return {"text": transcribe(data, mime, j.language)}
+    except Exception as e:  # network, quota, bad audio: the customer can retry or type
+        import logging
+
+        logging.getLogger("advisor").warning("transcribe failed: %s", type(e).__name__)
+        raise HTTPException(424, "We could not turn that recording into text right now. Please try again or type your answer.") from e
+
+
+@router.put("/journeys/{journey_id}/language")
+def set_language(journey_id: str, body: LanguageIn, db: Session = Depends(get_db), user: User | None = Depends(current_user_optional)):
+    """The customer switched language mid-journey: the advisor and every later message follow it."""
+    from ..services.i18n import normalize
+
+    j = get_journey(journey_id, db, user)
+    j.language = normalize(body.language)
+    db.commit()
+    return {"language": j.language}
 
 
 @router.post("/journeys/{journey_id}/advisor/message")

@@ -1,3 +1,6 @@
+let locale = "en-IN";
+export const setFormatLocale = (l: string) => { locale = l; };
+
 const inr0 = new Intl.NumberFormat("en-IN", { maximumFractionDigits: 0 });
 const inr2 = new Intl.NumberFormat("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
@@ -7,12 +10,12 @@ export const rupees = (n: number | null | undefined, decimals = false) =>
 export const fmtDate = (iso: string | null | undefined) => {
   if (!iso) return "-";
   const d = new Date(iso.length === 10 ? `${iso}T00:00:00` : iso);
-  return isNaN(d.getTime()) ? iso : d.toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" });
+  return isNaN(d.getTime()) ? iso : d.toLocaleDateString(locale, { day: "numeric", month: "short", year: "numeric" });
 };
 
 export const fmtDateTime = (iso: string) => {
   const d = new Date(iso);
-  return isNaN(d.getTime()) ? iso : d.toLocaleString("en-IN", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" });
+  return isNaN(d.getTime()) ? iso : d.toLocaleString(locale, { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" });
 };
 
 export const titleCase = (s: string) =>

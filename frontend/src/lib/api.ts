@@ -38,8 +38,8 @@ function messageOf(detail: unknown, fallback: string): string {
   return fallback;
 }
 
-export async function api<T = unknown>(path: string, opts: { method?: string; body?: unknown; form?: FormData; auth?: boolean } = {}): Promise<T> {
-  const headers: Record<string, string> = {};
+export async function api<T = unknown>(path: string, opts: { method?: string; body?: unknown; form?: FormData; auth?: boolean; headers?: Record<string, string> } = {}): Promise<T> {
+  const headers: Record<string, string> = { ...(opts.headers ?? {}) };
   const token = tokenStore.get();
   if (token) headers["Authorization"] = `Bearer ${token}`;
   let body: BodyInit | undefined;
@@ -64,6 +64,10 @@ export async function api<T = unknown>(path: string, opts: { method?: string; bo
     }
   }
   if (!res.ok) {
+    // gateway errors come back as HTML pages (e.g. a sleeping / restarting / out-of-memory host): never show them raw
+    if ([502, 503, 504].includes(res.status) || (typeof data === "string" && data.trimStart().startsWith("<"))) {
+      throw new ApiError(res.status, "The server is waking up or too busy to finish this (free hosting can sleep or restart). Please wait a minute and try again.");
+    }
     const detail = (data as { detail?: unknown } | null)?.detail ?? data;
     throw new ApiError(res.status, messageOf(detail, `Request failed (${res.status})`), detail);
   }

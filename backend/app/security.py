@@ -78,3 +78,5 @@ class RateLimiter:
 
 auth_limiter = RateLimiter(20, 60, "auth")
 upload_limiter = RateLimiter(60, 60, "upload")
+payment_limiter = RateLimiter(20, 60, "payment")
+voice_limiter = RateLimiter(20, 60, "voice")

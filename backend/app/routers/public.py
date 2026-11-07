@@ -18,6 +18,8 @@ from ..services.kyc.matching import mask
 from ..services.kyc.validators import gstin_checksum_char, gstin_format_ok, is_valid_gstin, is_valid_udyam, normalise_udyam
 from ..services.profile import INTERNET_OPTIONS, SEGMENTS
 
+from ..services.i18n import LANGUAGE_NAMES  # noqa: E402
+
 router = APIRouter(prefix="/api")
 
 
@@ -83,7 +85,7 @@ def meta():
     cities = [{"city": c, **info} for c, info in sorted(datasets.city_directory().items())]
     types = [{"business_type": t, "segment": s} for t, s in sorted(datasets.business_type_segments().items())]
     return {"cities": cities, "business_types": types, "internet_options": INTERNET_OPTIONS, "segments": SEGMENTS,
-            "languages": [{"code": "en", "label": "English"}, {"code": "hi", "label": "हिन्दी"}],
+            "languages": [{"code": c, "label": n} for c, n in LANGUAGE_NAMES.items()],
             "benchmarks": datasets.segment_benchmarks()}
 
 

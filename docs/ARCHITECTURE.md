@@ -72,7 +72,7 @@ JWT + bcrypt; owner-scoped queries (404 for other users' orders); admin guard; P
 | PaddleOCR | RapidOCR (PP-OCR models, onnxruntime) because paddlepaddle has no wheels for current Python |
 | PostgreSQL | supported by URL and compose file; not available in the build environment, so not run |
 | LLM key | not available; Anthropic provider written against the documented SDK, unexercised; rules provider tested |
-| Payments | simulated, with a failure toggle |
+| Payments | UPI, net banking and card through a gateway interface: built-in sandbox (dev) + Razorpay adapter (production, never run against live Razorpay). See [PAYMENTS.md](PAYMENTS.md) |
 | GST rate, price position | assumptions above |
 | Languages | EN + HI templates; other languages need the LLM |
-| Voice / WhatsApp / DigiLocker / e-sign | not built (listed as roadmap) |
+| WhatsApp / DigiLocker / e-sign | not built (listed as roadmap). Voice is built (browser speech or server transcription, see [ADVISOR.md](ADVISOR.md)) |

@@ -1,5 +1,7 @@
 "use client";
 import type { ButtonHTMLAttributes, ReactNode } from "react";
+import { useLang } from "@/lib/i18n";
+import { localizeMessage } from "@/lib/localizeMessage";
 
 export function cx(...c: (string | false | null | undefined)[]) {
   return c.filter(Boolean).join(" ");
@@ -25,7 +27,8 @@ export function Button({ variant = "primary", loading, className, children, disa
 }
 
 export function Spinner({ small }: { small?: boolean }) {
-  return <span role="status" aria-label="Loading" className={cx("inline-block animate-spin rounded-full border-2 border-current border-t-transparent", small ? "h-4 w-4" : "h-6 w-6")} />;
+  const { tr } = useLang();
+  return <span role="status" aria-label={tr("Loading")} className={cx("inline-block animate-spin rounded-full border-2 border-current border-t-transparent", small ? "h-4 w-4" : "h-6 w-6")} />;
 }
 
 export function Card({ children, className }: { children: ReactNode; className?: string }) {
@@ -33,10 +36,11 @@ export function Card({ children, className }: { children: ReactNode; className?:
 }
 
 export function ErrorBox({ children, onRetry }: { children: ReactNode; onRetry?: () => void }) {
+  const { tr } = useLang();
   return (
     <div role="alert" className="flex flex-wrap items-center gap-3 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-900">
-      <span className="flex-1">{children}</span>
-      {onRetry && <Button variant="secondary" onClick={onRetry}>Try again</Button>}
+      <span className="flex-1">{typeof children === "string" ? localizeMessage(children, tr) : children}</span>
+      {onRetry && <Button variant="secondary" onClick={onRetry}>{tr("Try again")}</Button>}
     </div>
   );
 }
@@ -50,10 +54,11 @@ export function Empty({ title, children }: { title: string; children?: ReactNode
   );
 }
 
-export function Loading({ label = "Loading..." }: { label?: string }) {
+export function Loading({ label }: { label?: string }) {
+  const { tr } = useLang();
   return (
     <div className="flex items-center justify-center gap-3 py-16 text-muted">
-      <Spinner /> <span className="text-sm">{label}</span>
+      <Spinner /> <span className="text-sm">{label ?? tr("Loading...")}</span>
     </div>
   );
 }
@@ -70,9 +75,9 @@ export function Badge({ tone = "neutral", children }: { tone?: keyof typeof TONE
 }
 
 export const statusTone = (s: string): keyof typeof TONES =>
-  ["verified", "approved", "paid", "activated", "done", "ok", "pass"].includes(s) ? "ok"
-    : ["needs_review", "review", "pending", "awaiting_documents", "installing", "install_scheduled", "warn", "kyc_verified", "placed"].includes(s) ? "warn"
-    : ["rejected", "failed", "action_required", "incomplete", "cancelled", "fail", "missing"].includes(s) ? "bad" : "neutral";
+  ["verified", "approved", "paid", "succeeded", "activated", "done", "ok", "pass"].includes(s) ? "ok"
+    : ["needs_review", "review", "pending", "awaiting_documents", "processing", "created", "installing", "install_scheduled", "warn", "kyc_verified", "placed"].includes(s) ? "warn"
+    : ["rejected", "failed", "expired", "action_required", "incomplete", "cancelled", "fail", "missing"].includes(s) ? "bad" : "neutral";
 
 export function Field({ label, hint, error, children, htmlFor }: { label: string; hint?: string; error?: string; children: ReactNode; htmlFor?: string }) {
   return (

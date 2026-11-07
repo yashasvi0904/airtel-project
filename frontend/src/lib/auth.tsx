@@ -1,6 +1,6 @@
 "use client";
 import { createContext, useCallback, useContext, useEffect, useState, type ReactNode } from "react";
-import { api, tokenStore } from "./api";
+import { api, ApiError, tokenStore } from "./api";
 import type { User } from "./types";
 
 interface AuthState {
@@ -31,7 +31,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
     api<User>("/auth/me")
       .then(setUser)
-      .catch(() => tokenStore.set(null))
+      // only a real 401 means the token is bad; a network blip or a sleeping server must not sign the customer out (e.g. mid-payment)
+      .catch((e) => { if (e instanceof ApiError && e.status === 401) tokenStore.set(null); })
       .finally(() => setLoading(false));
   }, []);
 

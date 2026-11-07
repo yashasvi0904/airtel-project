@@ -16,12 +16,12 @@
 
   <!-- lane: client -->
   <rect class="lane" x="30" y="100" width="1540" height="150"/>
-  <text x="50" y="128" class="s">CLIENT - Next.js 16 / React / TypeScript / Tailwind (mobile-first, EN + HI)</text>
+  <text x="50" y="128" class="s">CLIENT - Next.js 16 / React / TypeScript / Tailwind (mobile-first · 10 languages · voice in/out)</text>
   <rect class="box" x="50" y="145" width="180" height="85"/><text x="62" y="172" class="h">Landing</text><text x="62" y="196" class="s">value, services,</text><text x="62" y="214" class="s">segments</text>
   <rect class="box" x="250" y="145" width="180" height="85"/><text x="262" y="172" class="h">Onboarding</text><text x="262" y="196" class="s">profile, GSTIN</text><text x="262" y="214" class="s">instant check</text>
-  <rect class="box" x="450" y="145" width="180" height="85"/><text x="462" y="172" class="h">AI advisor chat</text><text x="462" y="196" class="s">follow-ups, chips,</text><text x="462" y="214" class="s">Hindi / English</text>
+  <rect class="box" x="450" y="145" width="180" height="85"/><text x="462" y="172" class="h">AI advisor chat</text><text x="462" y="196" class="s">adaptive questions, voice,</text><text x="462" y="214" class="s">10 languages</text>
   <rect class="box" x="650" y="145" width="200" height="85"/><text x="662" y="172" class="h">Bundle + quote</text><text x="662" y="196" class="s">toggles, live repricing,</text><text x="662" y="214" class="s">fixes for dependencies</text>
-  <rect class="box" x="870" y="145" width="180" height="85"/><text x="882" y="172" class="h">Checkout</text><text x="882" y="196" class="s">order id, simulated</text><text x="882" y="214" class="s">payment</text>
+  <rect class="box" x="870" y="145" width="180" height="85"/><text x="882" y="172" class="h">Checkout</text><text x="882" y="196" class="s">UPI · net banking · card,</text><text x="882" y="214" class="s">order id</text>
   <rect class="box" x="1070" y="145" width="220" height="85"/><text x="1082" y="172" class="h">Smart KYC + tracker</text><text x="1082" y="196" class="s">consent, upload, checks,</text><text x="1082" y="214" class="s">slot booking, timeline</text>
   <rect class="box" x="1310" y="145" width="240" height="85"/><text x="1322" y="172" class="h">Admin dashboard</text><text x="1322" y="196" class="s">funnel, segments, leads,</text><text x="1322" y="214" class="s">orders, KYC queue, charts</text>
 
@@ -34,19 +34,20 @@
   <rect class="lane" x="30" y="345" width="1540" height="400"/>
   <text x="50" y="373" class="s">BACKEND - Python FastAPI · SQLAlchemy · Pandas · JWT auth (customer / admin) · validation · rate limits · masked logs</text>
   <path d="M800 323 L800 392" stroke="#1c1c21" stroke-width="2" marker-end="url(#arr)"/>
-  <rect class="box" x="50" y="392" width="1500" height="46"/><text x="70" y="422" class="t">REST routers: auth · meta/catalogue · journeys/advisor · recommendations/quotes · orders/payment/schedule · KYC · admin analytics · mock registries</text>
+  <rect class="box" x="50" y="392" width="1500" height="46"/><text x="70" y="422" class="t">REST routers: auth · meta/catalogue · journeys/advisor/transcribe · recommendations/quotes · orders/payments/webhooks · KYC · admin analytics · mock registries</text>
 
   <rect class="llm" x="50" y="470" width="300" height="250"/>
   <text x="66" y="498" class="h">AI advisor</text>
-  <text x="66" y="524" class="s">Slots: needs, quantities, budget</text>
-  <text x="66" y="546" class="s">Deterministic question plan</text>
-  <text x="66" y="568" class="s">Provider interface:</text>
-  <text x="76" y="590" class="t">• Claude (structured output)</text>
-  <text x="76" y="612" class="t">• Rules / Hinglish fallback</text>
-  <text x="66" y="640" class="s">LLM rephrases engine output; reply is</text>
-  <text x="66" y="660" class="s">rejected if any ₹ amount or product id</text>
-  <text x="66" y="680" class="s">was not produced by the engine</text>
-
+  <text x="66" y="522" class="s">Reads needs, rejections, link type,</text>
+  <text x="66" y="542" class="s">quantities, budget; yes/no in context</text>
+  <text x="66" y="564" class="s">Segment plan; never repeats a question</text>
+  <text x="66" y="588" class="s">Providers:</text>
+  <text x="76" y="608" class="t">• Gemini · Claude (structured output)</text>
+  <text x="76" y="628" class="t">• Rules (EN / HI / Hinglish) fallback</text>
+  <text x="66" y="652" class="s">Voice: browser speech, or server transcription</text>
+  <text x="66" y="676" class="s">LLM interprets + phrases only; a reply is</text>
+  <text x="66" y="696" class="s">rejected if it has a ₹ amount or product the</text>
+  <text x="66" y="714" class="s">engine did not produce (10 languages)</text>
   <rect class="det" x="370" y="470" width="360" height="250"/>
   <text x="386" y="498" class="h">Catalogue logic</text>
   <text x="386" y="524" class="s">Segment inference (from leads data)</text>
@@ -72,7 +73,7 @@
   <rect class="det" x="1190" y="470" width="360" height="250"/>
   <text x="1206" y="498" class="h">Orders &amp; back-office</text>
   <text x="1206" y="524" class="t">Order state machine + event timeline</text>
-  <text x="1206" y="546" class="t">Payment (simulated), KYC gating</text>
+  <text x="1206" y="546" class="t">Payments: UPI · netbanking · card, KYC gating</text>
   <text x="1206" y="568" class="t">Install slots from typical_install_days</text>
   <text x="1206" y="598" class="h" style="font-size:18px">Analytics (pandas)</text>
   <text x="1206" y="622" class="t">Funnel · segments · sources · drop reasons</text>
@@ -85,14 +86,14 @@
   <rect class="data" x="50" y="810" width="300" height="130"/><text x="66" y="838" class="h">SQL database</text><text x="66" y="862" class="s">SQLite (default) or PostgreSQL</text><text x="66" y="884" class="s">users · products (seeded from CSV)</text><text x="66" y="906" class="s">journeys · quotes · orders · events</text><text x="66" y="928" class="s">KYC cases (identifiers encrypted)</text>
   <rect class="data" x="370" y="810" width="360" height="130"/><text x="386" y="838" class="h">Encrypted document store</text><text x="386" y="862" class="s">Fernet (AES) at rest, random file names</text><text x="386" y="884" class="s">auto-purge after 30 days</text><text x="386" y="906" class="s">delete-on-request (consent withdrawal)</text>
   <rect class="data" x="750" y="810" width="420" height="130"/><text x="766" y="838" class="h">Supplied CSV datasets</text><text x="766" y="862" class="s">product_catalogue (25) → products table</text><text x="766" y="884" class="s">smb_leads (5,000) → analytics, attach rates, model</text><text x="766" y="906" class="s">mock_gstin_registry (3,534) · mock_udyam_registry (2,723)</text>
-  <rect class="data" x="1190" y="810" width="360" height="130"/><text x="1206" y="838" class="h">External (optional)</text><text x="1206" y="862" class="s">Anthropic API (LLM) - key only on server</text><text x="1206" y="884" class="s">No key → rules provider, app unaffected</text><text x="1206" y="906" class="s">Payment gateway: simulated</text>
+  <rect class="data" x="1190" y="810" width="360" height="130"/><text x="1206" y="838" class="h">External (optional)</text><text x="1206" y="858" class="s">LLM: Gemini / Anthropic (keys server-side)</text><text x="1206" y="878" class="s">No key → rules provider, app unaffected</text><text x="1206" y="898" class="s">Payments: Razorpay (prod, not run live) ·</text><text x="1206" y="918" class="s">sandbox gateway (dev) · HMAC webhooks</text>
 
   <!-- data flow arrows -->
   <path d="M200 720 L200 765" stroke="#1c1c21" stroke-width="2" marker-end="url(#arr)" marker-start="url(#arr)"/>
   <path d="M550 720 L550 765" stroke="#1c1c21" stroke-width="2" marker-end="url(#arr)" marker-start="url(#arr)"/>
   <path d="M960 720 L960 765" stroke="#1c1c21" stroke-width="2" marker-end="url(#arr)" marker-start="url(#arr)"/>
   <path d="M1370 720 L1370 765" stroke="#1c1c21" stroke-width="2" marker-end="url(#arr)" marker-start="url(#arr)"/>
-  <path d="M352 560 L368 560" stroke="#e40000" stroke-width="3" marker-end="url(#arrR)" marker-start="url(#arrR)"/>
+  <path d="M351 520 L369 520" stroke="#e40000" stroke-width="3" marker-end="url(#arrR)" marker-start="url(#arrR)"/>
   <text x="214" y="466" class="s" style="fill:#e40000;font-weight:700">facts ↔ wording</text>
   <path d="M200 438 L200 470" stroke="#1c1c21" stroke-width="2" marker-end="url(#arr)"/>
   <path d="M550 438 L550 470" stroke="#1c1c21" stroke-width="2" marker-end="url(#arr)"/>

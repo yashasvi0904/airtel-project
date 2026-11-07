@@ -1,5 +1,6 @@
 "use client";
 import type { TrackerStep } from "@/lib/types";
+import { useLang } from "@/lib/i18n";
 import { cx } from "./ui";
 
 const ICON: Record<string, string> = { done: "✓", current: "●", pending: "", failed: "!", blocked: "!", review: "…", cancelled: "×" };
@@ -9,8 +10,9 @@ const RING: Record<string, string> = {
 };
 
 export default function Tracker({ steps }: { steps: TrackerStep[] }) {
+  const { tr } = useLang();
   return (
-    <ol className="grid gap-0 sm:grid-cols-6" aria-label="Order progress">
+    <ol className="grid gap-0 sm:grid-cols-6" aria-label={tr("Order progress")}>
       {steps.map((s, i) => (
         <li key={s.key} className="relative flex gap-3 pb-6 sm:flex-col sm:items-center sm:gap-2 sm:pb-0 sm:text-center" aria-current={s.state === "current" ? "step" : undefined}>
           {i < steps.length - 1 && (
@@ -21,9 +23,9 @@ export default function Tracker({ steps }: { steps: TrackerStep[] }) {
           )}
           <span className={cx("relative z-10 grid h-8 w-8 shrink-0 place-items-center rounded-full border-2 text-sm font-bold", RING[s.state])}>{ICON[s.state]}</span>
           <span className="pt-1 sm:pt-0">
-            <span className={cx("block text-sm font-medium", s.state === "pending" && "text-muted")}>{s.label}</span>
-            {s.state === "review" && <span className="block text-xs text-amber-700">Under review</span>}
-            {(s.state === "failed" || s.state === "blocked") && <span className="block text-xs text-red-700">Needs attention</span>}
+            <span className={cx("block text-sm font-medium", s.state === "pending" && "text-muted")}>{tr(s.label)}</span>
+            {s.state === "review" && <span className="block text-xs text-amber-700">{tr("Under review")}</span>}
+            {(s.state === "failed" || s.state === "blocked") && <span className="block text-xs text-red-700">{tr("Needs attention")}</span>}
           </span>
         </li>
       ))}

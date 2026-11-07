@@ -1,4 +1,4 @@
-"""Order lifecycle: creation, simulated payment, KYC gating, install scheduling and activation."""
+"""Order lifecycle: creation, KYC gating, install scheduling and activation. Payments live in services/payments."""
 import secrets
 from datetime import date, timedelta
 
@@ -57,22 +57,6 @@ def create_order(db: Session, user: User, journey: Journey, quote: Quote) -> Ord
     journey.stage = "ordered"
     db.flush()
     add_event(db, order, "placed", f"Order placed for {len(quote.items)} product(s).", "customer")
-    db.commit()
-    return order
-
-
-def pay(db: Session, order: Order, method: str, simulate: str = "success") -> Order:
-    """Simulated payment (no gateway is integrated). 'fail' reproduces the 'first payment failed' drop reason."""
-    if order.payment_status == "paid":
-        raise OrderError("This order is already paid", "already_paid")
-    if order.status == "cancelled":
-        raise OrderError("This order was cancelled", "cancelled")
-    if simulate == "fail":
-        order.payment_status = "failed"
-        add_event(db, order, "payment_failed", f"Simulated {method.upper()} payment failed. Please retry.", "system")
-    else:
-        order.payment_status = "paid"
-        add_event(db, order, "payment_paid", f"Simulated {method.upper()} payment of Rs {order.monthly_total + order.setup_total:,.2f} received (demo - no real charge).", "system")
     db.commit()
     return order
 
@@ -149,6 +133,10 @@ def tracker(order: Order, kyc: KycCase | None) -> dict:
     next_action = None
     if order.status == "cancelled":
         next_action = None
+    elif not paid and order.payment_status == "processing":
+        next_action = {"type": "pay", "message": "Your payment is being processed. Check its status or try again."}
+    elif not paid and order.payment_status == "failed":
+        next_action = {"type": "pay", "message": "Your last payment did not go through, and no money was taken. Please try again."}
     elif not paid:
         next_action = {"type": "pay", "message": "Complete your payment to continue."}
     elif kyc_status in ("not_started", "awaiting_documents"):

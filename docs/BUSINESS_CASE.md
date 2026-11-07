@@ -25,7 +25,7 @@ Owner-run businesses with 1-150 staff in tier 1-2 cities who need connectivity p
 (The deck lists the exact generated bundles; price positions follow `pricing_rules.json`.)
 
 ## 4. Needs discovery without a salesperson (key question 2)
-A chat advisor asks at most five questions (pain point, extras, fibre availability, SIM count, budget) and always explains each product. English/Hindi/Hinglish today; regional languages and voice/WhatsApp are the roadmap via the same provider interface.
+A chat (or voice) advisor in the owner's language - ten, the ones the dataset's leads speak - asks only the few questions that matter for that business, chosen by segment and current setup (a hotspot user is not asked what is wrong; a factory is asked about machines, not WhatsApp). It reads what was said, including what the owner does *not* want, says back what it understood, never repeats a question, and explains every product. The engine, not the model, picks products and prices. WhatsApp is the next channel, through the same provider interface. See [ADVISOR.md](ADVISOR.md).
 
 ## 5. KYC and DPDP (key question 3)
 Consent screen with purposes and retention; four documents only; OCR + GSTIN/Udyam registry + name/address matching; precise fix lists; DigiLocker and e-sign are the next integrations. See [PRIVACY.md](PRIVACY.md).

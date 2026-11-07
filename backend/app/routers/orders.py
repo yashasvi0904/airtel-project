@@ -6,7 +6,7 @@ from sqlalchemy.orm import Session
 from ..config import get_settings
 from ..db import get_db
 from ..models import Journey, KycCase, Order, Quote, User
-from ..schemas import ConsentIn, OrderIn, PayIn, ScheduleIn
+from ..schemas import ConsentIn, OrderIn, ScheduleIn
 from ..security import current_user, upload_limiter
 from ..services import orders as svc
 from ..services.kyc import service as kyc
@@ -62,12 +62,6 @@ def get_order(order_id: str, db: Session = Depends(get_db), user: User = Depends
     o = own_order(order_id, db, user)
     quote = db.get(Quote, o.quote_id)
     return {**view(db, o), "items": quote.items, "totals": quote.totals}
-
-
-@router.post("/orders/{order_id}/pay")
-def pay(order_id: str, body: PayIn, db: Session = Depends(get_db), user: User = Depends(current_user)):
-    o = own_order(order_id, db, user)
-    return view(db, _wrap(svc.pay, db, o, body.method, body.simulate))
 
 
 @router.get("/orders/{order_id}/slots")

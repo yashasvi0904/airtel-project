@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
 import { api } from "@/lib/api";
+import { useLang } from "@/lib/i18n";
 
 interface GoogleId {
   initialize: (o: { client_id: string; callback: (r: { credential: string }) => void; ux_mode?: string }) => void;
@@ -25,6 +26,7 @@ function loadScript(): Promise<void> {
 
 /** "Sign in with Google" / "Sign up with Google" using Google Identity Services. The client ID comes from the backend. */
 export default function GoogleButton({ mode, onCredential, onError }: { mode: "login" | "register"; onCredential: (c: string) => void; onError: (m: string) => void }) {
+  const { tr, lang, tn } = useLang();
   const box = useRef<HTMLDivElement>(null);
   const [state, setState] = useState<"loading" | "ready" | "disabled">("loading");
   const cb = useRef(onCredential);
@@ -40,26 +42,26 @@ export default function GoogleButton({ mode, onCredential, onError }: { mode: "l
         if (cancelled || !box.current || !window.google) return;
         window.google.accounts.id.initialize({ client_id: cfg.google_client_id, callback: (r) => cb.current(r.credential) });
         const width = Math.min(380, Math.max(220, box.current.offsetWidth));
-        window.google.accounts.id.renderButton(box.current, { type: "standard", theme: "outline", size: "large", text: mode === "login" ? "signin_with" : "signup_with", shape: "rectangular", width, logo_alignment: "left" });
+        window.google.accounts.id.renderButton(box.current, { type: "standard", theme: "outline", size: "large", text: mode === "login" ? "signin_with" : "signup_with", shape: "rectangular", width, logo_alignment: "left", locale: lang });
         setState("ready");
       } catch {
         if (!cancelled) {
           setState("disabled");
-          onError("Google sign-in could not be loaded. You can still use email and password.");
+          onError(tn("Google sign-in could not be loaded. You can still use email and password."));
         }
       }
     })();
     return () => { cancelled = true; };
-  }, [mode, onError]);
+  }, [mode, onError, lang, tn]);
 
   if (state === "disabled") {
     return (
-      <button type="button" disabled title="Google sign-in is not configured on this server (set GOOGLE_CLIENT_ID)" className="flex min-h-11 w-full cursor-not-allowed items-center justify-center gap-2 rounded-lg border border-line bg-neutral-50 px-4 text-sm font-medium text-neutral-400">
-        <GoogleG /> {mode === "login" ? "Sign in with Google" : "Sign up with Google"} (not configured)
+      <button type="button" disabled title={tr("Google sign-in is not configured on this server (set GOOGLE_CLIENT_ID)")} className="flex min-h-11 w-full cursor-not-allowed items-center justify-center gap-2 rounded-lg border border-line bg-neutral-50 px-4 text-sm font-medium text-neutral-400">
+        <GoogleG /> {mode === "login" ? tr("Sign in with Google") : tr("Sign up with Google")} ({tr("not configured")})
       </button>
     );
   }
-  return <div ref={box} className="flex min-h-11 w-full justify-center" aria-label={mode === "login" ? "Sign in with Google" : "Sign up with Google"} />;
+  return <div ref={box} className="flex min-h-11 w-full justify-center" aria-label={mode === "login" ? tr("Sign in with Google") : tr("Sign up with Google")} />;
 }
 
 function GoogleG() {

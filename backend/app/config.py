@@ -31,11 +31,25 @@ class Settings(BaseSettings):
     # Set to empty to use the real system date.
     reference_date: str = "2026-07-15"
 
-    # AI advisor. provider: auto | anthropic | mock
+    # AI advisor. provider: auto (Anthropic if keyed, else Gemini if keyed, else built-in rules) | anthropic | gemini | mock
     llm_provider: str = "auto"
     anthropic_api_key: str = ""
     anthropic_model: str = "claude-sonnet-5-5"
+    gemini_api_key: str = ""
+    gemini_model: str = "gemini-flash-lite-latest"
+    gemini_fallback_models: str = "gemini-3.1-flash-lite,gemini-3.5-flash-lite"  # tried in order when the first model is out of free-tier quota
     llm_timeout_seconds: int = 25
+
+    # Payments. gateway: sandbox (built-in test PSP, development only) | razorpay (live/test keys from the Razorpay dashboard)
+    payment_gateway: str = "sandbox"
+    payment_expiry_minutes: int = 15           # an unfinished attempt expires after this long
+    payment_webhook_secret: str = "dev-webhook-secret-change-me"  # HMAC key for the sandbox gateway's webhooks
+    sandbox_settle_seconds: float = 3.0        # how long the sandbox takes to "approve" a UPI request
+    merchant_name: str = "Accel Business"
+    merchant_vpa: str = "accel.business@sandbox"  # payee VPA shown in UPI intent / QR links
+    razorpay_key_id: str = ""
+    razorpay_key_secret: str = ""
+    razorpay_webhook_secret: str = ""
 
     # Commercial assumption that is NOT in the supplied catalogue (see docs/ARCHITECTURE.md)
     gst_rate_percent: float = 18.0

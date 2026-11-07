@@ -2,7 +2,7 @@
 import uuid
 from datetime import datetime, timezone
 
-from sqlalchemy import JSON, Boolean, DateTime, Float, ForeignKey, Integer, String, Text
+from sqlalchemy import JSON, Boolean, DateTime, Float, ForeignKey, Integer, String, Text, UniqueConstraint
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from .db import Base
@@ -141,3 +141,42 @@ class KycDocument(Base):
     extracted: Mapped[dict] = mapped_column(JSON, default=dict)
     uploaded_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
     purge_after: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+
+
+class Payment(Base):
+    """One payment attempt for an order. Amounts are integer paise. Card numbers, CVVs and full VPAs are never stored:
+    only masked display details. `gateway_data` is private gateway-side state and is never returned to clients."""
+    __tablename__ = "payments"
+    __table_args__ = (UniqueConstraint("gateway", "gateway_ref", name="uq_payment_gateway_ref"),)  # a webhook must map to exactly one payment
+    id: Mapped[str] = mapped_column(String(32), primary_key=True, default=new_id)
+    order_id: Mapped[str] = mapped_column(ForeignKey("orders.id"), index=True)
+    method: Mapped[str] = mapped_column(String(12))  # upi | netbanking | card
+    amount_paise: Mapped[int] = mapped_column(Integer)
+    currency: Mapped[str] = mapped_column(String(3), default="INR")
+    status: Mapped[str] = mapped_column(String(12), default="created")  # created|pending|succeeded|failed|expired|cancelled
+    gateway: Mapped[str] = mapped_column(String(20))
+    gateway_ref: Mapped[str | None] = mapped_column(String(80), nullable=True, index=True)
+    gateway_payment_id: Mapped[str | None] = mapped_column(String(80), nullable=True)
+    idempotency_key: Mapped[str | None] = mapped_column(String(80), nullable=True, unique=True)
+    receipt: Mapped[str] = mapped_column(String(60), default="")
+    attempt_no: Mapped[int] = mapped_column(Integer, default=1)
+    details: Mapped[dict] = mapped_column(JSON, default=dict)  # masked, safe to show: {"vpa": "ra***@okhdfc"}, {"card": {...}}
+    next_action: Mapped[dict | None] = mapped_column(JSON, nullable=True)
+    gateway_data: Mapped[dict] = mapped_column(JSON, default=dict)
+    failure_code: Mapped[str | None] = mapped_column(String(40), nullable=True)
+    failure_message: Mapped[str | None] = mapped_column(String(300), nullable=True)
+    expires_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
+    paid_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, onupdate=utcnow)
+
+
+class PaymentWebhookEvent(Base):
+    """Every gateway webhook delivery, keyed by the gateway's event id, so retries are processed exactly once."""
+    __tablename__ = "payment_webhook_events"
+    __table_args__ = (UniqueConstraint("gateway", "event_id", name="uq_webhook_event"),)
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    gateway: Mapped[str] = mapped_column(String(20))
+    event_id: Mapped[str] = mapped_column(String(120))
+    outcome: Mapped[str] = mapped_column(String(200), default="")
+    received_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)

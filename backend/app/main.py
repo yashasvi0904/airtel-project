@@ -11,7 +11,7 @@ from sqlalchemy import select
 from . import models
 from .config import get_settings
 from .db import Base, SessionLocal, engine
-from .routers import admin, journeys, orders, public
+from .routers import admin, journeys, orders, payments, public
 from .security import hash_password
 from .services.catalogue import seed_catalogue
 from .services.kyc.service import purge_expired
@@ -60,7 +60,7 @@ def create_app() -> FastAPI:
         log.exception("unhandled error on %s", request.url.path)  # message only; request bodies are never logged
         return JSONResponse(status_code=500, content={"detail": "Something went wrong on our side. Please try again."})
 
-    for r in (public.router, journeys.router, orders.router, admin.router):
+    for r in (public.router, journeys.router, orders.router, payments.router, admin.router):
         app.include_router(r)
     return app
 

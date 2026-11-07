@@ -342,7 +342,7 @@ add_text(s, 0.45, 4.42, 9.1, 0.6, [("Pricing rule: the catalogue gives a min-max
 s = new_slide("The journey: five steps, each aimed at a measured drop-off", "Working prototype - every step below runs end to end")
 steps = [
     ("1 Onboard", "1 minute. GSTIN checked instantly against the registry.", "Drop: unreachable (805), no time for a visit (531)"),
-    ("2 Advise", "Chat in English/Hindi; few questions; reasons for every product.", "Drop: not interested, only wanted mobile (280)"),
+    ("2 Advise", "Chat or voice in 10 languages; only the questions that matter; reasons for every product.", "Drop: not interested, only wanted mobile (280)"),
     ("3 Quote", "Live price with GST, toggles, 12/24 months, dependency fixes.", "Drop: price (414), too complex (206), too slow (179)"),
     ("4 Smart KYC", "Consent, OCR, GSTIN + Udyam lookup, name/address match, exact fix list.", "Drop: missing doc (94), mismatch (47), paperwork (79)"),
     ("5 Track", "Pay, book slot, live status; no calls.", "Drop: install delay (98), payment failed (28)"),
@@ -404,9 +404,9 @@ s = new_slide("Rollout and risks", "Pilot where the data says we win, then widen
 add_text(s, 0.45, 1.55, 4.3, 3.4, [
     ("Rollout", {"bold": True, "size": 10.5}),
     ("Weeks 0-8, pilot: two cities (one tier 1, one tier 2), professional offices + multi-site, assisted by field staff; weekly KYC-review sampling.", {"bullet": True}),
-    ("Months 3-6: all tier 1-2 cities; manufacturers with field-assisted surveys; DigiLocker + e-sign; WhatsApp front end; Hindi + 3 regional languages via the LLM.", {"bullet": True}),
-    ("Months 6-12: micro self-serve starter bundle through referral and WhatsApp; partner portal; real payment gateway.", {"bullet": True}),
-    ("Prototype status: payments simulated, PostgreSQL and Claude provider written but not exercised, KYC tuned on 47 synthetic specimens.", {"bullet": True, "color": GREY}),
+    ("Months 3-6: all tier 1-2 cities; manufacturers with field-assisted surveys; DigiLocker + e-sign; WhatsApp front end; native-speaker review of the 10 languages.", {"bullet": True}),
+    ("Months 6-12: micro self-serve starter bundle through referral and WhatsApp; partner portal; live payment gateway, refunds and recurring billing.", {"bullet": True}),
+    ("Prototype status: payments on a sandbox gateway (Razorpay adapter not run live), PostgreSQL and Claude provider not exercised, translations machine-made, KYC tuned on 47 synthetic specimens.", {"bullet": True, "color": GREY}),
 ], size=9, name="rollout")
 rows = [["Risk", "Mitigation"],
         ["OCR on real phone photos is worse than clean specimens", "Quality gate (blur, tilt), re-upload guidance, human review queue, measure first-pass rate"],
@@ -422,11 +422,11 @@ s = new_slide("Architecture, privacy and what is built", "Next.js + FastAPI + SQ
 s.shapes.add_picture(str(ROOT / "docs" / "architecture.png"), Inches(0.4), Inches(1.5), width=Inches(5.3))
 add_text(s, 6.15, 1.55, 3.4, 3.4, [
     ("Built and tested", {"bold": True, "size": 10}),
-    ("Advisor, bundle, quote, checkout, KYC, tracker, admin; 90+ automated tests; desktop and mobile browser journeys.", {"bullet": True}),
+    ("Advisor (chat + voice, 10 languages), bundle, quote, checkout (UPI/net banking/card), KYC, tracker, admin; 190+ automated tests; desktop and phone browser journeys.", {"bullet": True}),
     ("Privacy by design", {"bold": True, "size": 10}),
     ("Consent first · only 4 documents · masked identifiers · encrypted at rest · auto-delete in 30 days · erase on request.", {"bullet": True}),
     ("Roadmap", {"bold": True, "size": 10}),
-    ("DigiLocker, e-sign, voice/WhatsApp, payment gateway, regional languages, partner portal.", {"bullet": True}),
+    ("DigiLocker, e-sign, WhatsApp, live payments + refunds, native-reviewed translations, partner portal.", {"bullet": True}),
 ], size=8.8, name="arch-bullets")
 
 prs.save(str(OUT))

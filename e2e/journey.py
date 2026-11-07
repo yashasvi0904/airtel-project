@@ -39,8 +39,16 @@ with sync_playwright() as p:
     page = ctx.new_page()
     errors = []
     page.on("pageerror", lambda e: errors.append(str(e)))
-    page.on("console", lambda m: errors.append(m.text) if m.type == "error" and "favicon" not in m.text else None)
-    page.on("response", lambda r: errors.append(f"{r.status} {r.url}") if r.status >= 500 else None)
+    third_party_failures = []  # e.g. Google rejecting an origin that is not whitelisted for the OAuth client: a setup matter, not an app error
+
+    def on_response(r):
+        if r.status >= 400 and "accounts.google.com" in r.url:
+            third_party_failures.append(r.url)
+        elif r.status >= 500:
+            errors.append(f"{r.status} {r.url}")
+
+    page.on("console", lambda m: errors.append(m.text) if m.type == "error" and "favicon" not in m.text and not (third_party_failures and "Failed to load resource" in m.text) else None)
+    page.on("response", on_response)
 
     step("landing")
     page.goto(args.base)
@@ -77,11 +85,11 @@ with sync_playwright() as p:
         time.sleep(0.4)
         if page.get_by_role("link", name=re.compile("Review & customise")).count():
             break
-    expect(page.get_by_role("link", name=re.compile("Review & customise"))).to_be_visible()
+    expect(page.get_by_role("link", name=re.compile("Review & customise")).first).to_be_visible()
     shot(page, "03_advisor")
 
     step("bundle: toggle + dynamic pricing")
-    page.get_by_role("link", name=re.compile("Review & customise")).click()
+    page.get_by_role("link", name=re.compile("Review & customise")).first.click()
     page.wait_for_url("**/bundle")
     expect(page.get_by_text("In your bundle")).to_be_visible()
     price = page.locator("dd", has_text="₹").first
@@ -94,10 +102,10 @@ with sync_playwright() as p:
     assert before != after, f"price did not change with term ({before} -> {after})"
     step(f"  term 12 -> 24 changed monthly {before} -> {after}")
     shot(page, "04_bundle")
-    page.get_by_role("button", name=re.compile("Get quote")).click()
+    page.get_by_role("button", name=re.compile("Get quote")).first.click()
     page.wait_for_url("**/checkout**")
 
-    step("checkout: register + order + simulated payment")
+    step("checkout: register + order, then pay (declined UPI, then card + OTP)")
     expect(page.get_by_text("Quote & checkout")).to_be_visible()
     shot(page, "05_checkout_anon")
     page.get_by_role("link", name="Create account").click()
@@ -108,15 +116,25 @@ with sync_playwright() as p:
     page.wait_for_url("**/checkout**")
     page.get_by_label(re.compile("I accept the contract")).check()
     page.get_by_role("button", name="Confirm order").click()
-    expect(page.get_by_text(re.compile(r"UD-\d{8}-[A-Z0-9]{6}")).first).to_be_visible()
+    page.wait_for_url("**/orders/*/pay")  # checkout hands off to the payment page once the order is placed
+    expect(page.get_by_text("Complete your payment")).to_be_visible(timeout=15000)
     order_id = re.search(r"UD-\d{8}-[A-Z0-9]{6}", page.inner_text("body")).group(0)
     step(f"  order {order_id}")
-    page.get_by_label("Demo: simulate a failed payment").check()
-    page.get_by_role("button", name=re.compile(r"^Pay ")).click()
-    expect(page.get_by_text(re.compile("simulated payment failed"))).to_be_visible()
-    page.get_by_label("Demo: simulate a failed payment").uncheck()
-    page.get_by_role("button", name=re.compile(r"^Pay ")).click()
-    page.wait_for_url("**/kyc")
+    shot(page, "05b_payment_choose")
+    page.get_by_label("UPI ID").fill("fail@okhdfc")  # sandbox: this VPA is declined
+    page.get_by_role("button", name="Send payment request").click()
+    expect(page.get_by_text("Payment failed.")).to_be_visible(timeout=30000)
+    page.get_by_role("radio", name="Card").click()
+    page.get_by_label("Card number").fill("4111111111111111")
+    page.get_by_label("Expiry").fill("1230")
+    page.get_by_label("CVV").fill("123")
+    page.get_by_label("Name on card").fill("Anil Sharma")
+    page.get_by_role("button", name=re.compile(r"^Pay ₹")).click()
+    expect(page.get_by_text("Verify with your bank")).to_be_visible(timeout=15000)
+    page.get_by_label("One-time password").fill("123456")
+    page.get_by_role("button", name="Verify and pay").click()
+    expect(page.get_by_text(re.compile("Payment received"))).to_be_visible(timeout=15000)
+    page.wait_for_url("**/kyc", timeout=15000)
 
     step("KYC: consent -> sample upload -> verified")
     expect(page.get_by_text("Before we start: your consent")).to_be_visible()

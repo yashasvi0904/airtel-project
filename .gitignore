@@ -12,3 +12,4 @@ frontend/.vercel/
 frontend/tsconfig.tsbuildinfo
 backend/.pytest_cache/
 *.log
+~$*

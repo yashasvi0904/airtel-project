@@ -16,13 +16,16 @@
   --color-line: #e6e7ec;
   --color-ok: #0f8a4b;
   --color-warn: #b45309;
-  --font-sans: var(--font-geist-sans), var(--font-deva), system-ui, sans-serif;
+  --font-sans: var(--font-geist-sans), var(--font-deva), var(--font-kannada), var(--font-gujarati), var(--font-telugu), var(--font-tamil), var(--font-bengali), var(--font-gurmukhi), var(--font-malayalam), system-ui, sans-serif;
   --font-mono: var(--font-geist-mono);
 }
 
 html {
   color-scheme: light;
 }
+
+html:not([lang="en"]) body { line-height: 1.65; }
+html:not([lang="en"]) h1, html:not([lang="en"]) h2 { line-height: 1.35; }
 
 body {
   background: var(--background);

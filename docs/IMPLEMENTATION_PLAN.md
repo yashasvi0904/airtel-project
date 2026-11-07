@@ -9,7 +9,7 @@ Status legend: ✅ done and tested · 🟡 done, partly tested · ⬜ not built.
 | 3 | Backend foundation | config, models, auth, catalogue seeding from CSV, error handling | import + API tests | ✅ |
 | 4 | Catalogue engine | eligibility, dependencies, recommender (3 tiers), pricing | 26 rule tests | ✅ |
 | 5 | AI advisor | provider interface, slot extraction (EN/HI), question plan, grounding guard, Anthropic + rules providers | 8 advisor tests + live chat runs; Claude path unexercised | 🟡 |
-| 6 | Quote & checkout | preview/repricing, quote snapshot, order id, simulated payment | API flow tests, browser E2E | ✅ |
+| 6 | Quote & checkout | preview/repricing, quote snapshot, order id, payments (sandbox + Razorpay adapter) | API flow tests, browser E2E | ✅ |
 | 7 | Smart KYC | OCR, parsing, registries, matching, pipeline, consent, encryption, retention, erasure | 12 specimen applicants asserted; upload validation tests | ✅ |
 | 8 | Order tracking | state machine, slots, tracker, admin advance | API flow + browser E2E | ✅ |
 | 9 | Admin dashboard | KPIs, funnel, segments, leads + propensity, orders, KYC queue, advisor leads | API tests; screens rendered in browser | 🟡 (charts verified visually on the Overview tab only) |
@@ -17,4 +17,4 @@ Status legend: ✅ done and tested · 🟡 done, partly tested · ⬜ not built.
 | 11 | Documentation & submission pack | README, CLAUDE.md, docs/*, architecture diagram, 10-slide business case, privacy note, demo script | files present, deck renders | ✅ |
 
 ## Out of scope / roadmap (named in the case, not built)
-Voice or WhatsApp front end · DigiLocker and e-sign · real payment gateway · regional languages beyond Hindi without an LLM key · partner portal with commissions · proper job queue for OCR · Redis rate limiting · PostgreSQL in CI.
+WhatsApp front end · DigiLocker and e-sign · live payment gateway run · native-speaker review of translations · partner portal with commissions · proper job queue for OCR · Redis rate limiting · PostgreSQL in CI.

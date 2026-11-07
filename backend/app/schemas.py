@@ -85,6 +85,10 @@ class ProfileIn(BaseModel):
         return v if re.fullmatch(r"[a-z]{2}", v or "") else "en"
 
 
+class LanguageIn(BaseModel):
+    language: str = Field(pattern=r"^[a-z]{2}$")
+
+
 class MessageIn(BaseModel):
     text: str = Field(min_length=1, max_length=1000)
 
@@ -106,11 +110,6 @@ class QuotePreviewIn(SelectionIn):
 class OrderIn(BaseModel):
     quote_id: str
     accept_terms: bool
-
-
-class PayIn(BaseModel):
-    method: str = Field(pattern="^(upi|card|netbanking)$")
-    simulate: str = Field(default="success", pattern="^(success|fail)$")
 
 
 class ScheduleIn(BaseModel):
